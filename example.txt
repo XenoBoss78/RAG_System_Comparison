@@ -1,0 +1,167 @@
+You are answering questions about SEC filing excerpts.
+Use only the retrieved context below. If the context is insufficient, say that the answer cannot be determined from the retrieved chunks.
+Cite supporting chunks inline using bracketed source numbers like [1] or [2].
+Keep the answer concise, but include the key numbers, entities, and dates when present.
+
+Retrieved context:
+[1] doc_id=doc_007806 title=AGYS_2022-05-23_10-K_12_item_8_financial_statements_and_supplementary_data_agilysys_inc_and_subsidiaries_annual_report_on_form_10k_ score=0.5882
+AGYS 2022-05-23 10-K 12 item 8 financial statements and supplementary data agilysys inc and subsidiaries annual report on form 10k
+
+during the measurement period (up to one year from the acquisition date).
+
+Effective April 1, 2022, ResortSuite became Agilysys Canada, Inc. a wholly-owned subsidiary of Agilysys, Inc.
+
+16. Subsequent Events
+
+None.
+
+17. Related Party Transaction
+
+See Note 14. Preferred Stock, for description of the MAK Capital investment in the Company. Michael Kaufman, the Chairman of the Company’s Board of Directors, is the Chief Executive Officer of MAK Capital.
+
+Schedule II - Valuation and Qualifying Accounts Years ended March 31, 2022, 2021 and 2020
+
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| (In thousands) |  | Balance at beginning of year | |  |  | Charged to costs and expenses | |  |  | Deductions | |  |  | Balance at end of year | |  |
+| 2022 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
+| Deferred tax valuation allowance |  | $ | 74,631 |  |  | $ | — |  |  | $ | (5,116 | ) |  | $ | 69,515 |  |
+| Allowance for expected credit losses |  | $ | 1,220 |  |  | $ | 117 |  |  | $ | (1,019 | ) |  | $ | 318 |  |
+| 2021 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
+| Deferred tax valuation allowance |  | $ | 66,819 |  |  | $ | 7,812 |  |  | $ | — |  |  | $ | 74,631 |  |
+| Allowance for doubtful accounts |  | $ | 1,634 |  |  | $ | 508 |  |  | $ | (922 | ) |  | $ | 1,220 |  |
+| 2020 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
+| Deferred tax valuation allowance |  | $ | 57,852 |  |  | $ | 8,967 |  |  | $ | — |  |  | $ | 66,819 |  |
+| Allowance for doubtful accounts |  | $ | 788 |  |  | $ | 1,434 |  |  | $ | (588 | ) |  | $ | 1,634 |  |
+
+63
+
+---
+
+[2] doc_id=doc_007650 title=AGYS_2023-05-19_10-K_12_item_8_financial_statements_and_supplementary_data_agilysys_inc_and_subsidiaries_annual_report_on_form_10k_ score=0.5812
+AGYS 2023-05-19 10-K 12 item 8 financial statements and supplementary data agilysys inc and subsidiaries annual report on form 10k
+
+and enhance the entire guest journey. Agilysys is also known for its world-class customer-centric service. Many of the top hospitality companies around the world use Agilysys solutions to improve guest loyalty, drive revenue growth, and increase operational efficiencies. Agilysys operates across North America, Europe, the Middle East, Asia-Pacific, and India, with headquarters in Alpharetta, GA.
+
+The Company has just one reportable segment serving the global hospitality industry.
+
+Reference herein to any particular year or quarter refers to periods within the fiscal year ended March 31. For example, fiscal 2023 refers to the fiscal year ended March 31, 2023.
+
+2. Summary of Significant Accounting Policies
+
+Principles of consolidation. The consolidated financial statements include the accounts of Agilysys, Inc. and subsidiaries. Investments in affiliated companies are accounted for by the equity or cost method, as appropriate. All inter-company accounts have been eliminated.
+
+Use of estimates. Preparation of consolidated financial statements in conformity with U.S. generally accepted accounting principles (“GAAP”) requires management to make estimates and assumptions. These estimates and assumptions affect the reported amounts of assets and liabilities at the date of the financial statements and the reported amounts of revenue and expenses during the reported periods. Actual results could differ from those estimates.
+
+Cash and cash equivalents. We consider all highly liquid investments purchased with an original maturity from date of acquisition of three months or less to be cash equivalents. Other highly liquid investments considered cash equivalents with no established maturity date are fully redeemable on demand (without penalty) with settlement of principal and accrued interest on the same or following business day after instruction to redeem. Cash equivalent investments are readily convertible to cash with no penalty and can include certificates of deposit, commercial paper, treasury bills, money market funds and other investments. Commercial paper cash equivalents totaled $5.0 million and $15.0 million as of March 31, 2023 and March 31, 2022, respectively. We determine the fair value of commercial paper using significant other observable inputs (level 2) based on pricing from independent sources that use quoted prices in active markets for identical assets or other observable inputs including benchmark yields and interest rates.
+
+Allowance for expected credit losses. We maintain allowances for expected credit losses for estimated losses resulting from the inability or unwillingness of our customers to make required payments. We base our expected credit loss model on historical experience, adjusted for current conditions and reasonable and supportable forecasts. To help mitigate the associated credit risk we perform periodic credit evaluations of our customers.
+
+Customer credit allowance. We maintain allowances for estimated customer credits. Credits are typically due to the timing or amount of customer invoices processed for specific services, including professional and subscription, and maintenance coverage. In many cases, there has not been clear or timely communication of the need to adjust coverage or service at a location in advance of when we invoice for the associated coverage or service. We will issue a credit after agreeing to the service or coverage adjustment as requested by the customer within the terms of our contract.
+
+Inventories. Our inventories are
+
+---
+
+[3] doc_id=doc_007650 title=AGYS_2023-05-19_10-K_12_item_8_financial_statements_and_supplementary_data_agilysys_inc_and_subsidiaries_annual_report_on_form_10k_ score=0.5769
+AGYS 2023-05-19 10-K 12 item 8 financial statements and supplementary data agilysys inc and subsidiaries annual report on form 10k
+
+2023 and 2022, respectively. The consolidated statement of operations includes these costs in other charges.
+
+62
+
+---
+
+Revenue attributable to ResortSuite included in our consolidated statement of operations was $5.2 million and $1.3 million for the year ended March 31, 2023 and 2022, respectively. The pro forma impact of the business combination during the two years ended March 31, 2022 was not material to our historical consolidated operating results and is therefore not presented.
+
+Effective April 1, 2022, ResortSuite became Agilysys Canada, Inc. a wholly-owned subsidiary of Agilysys, Inc.
+
+16. Subsequent Events
+
+None.
+
+17. Related Party Transaction
+
+See Note 14. Preferred Stock, for description of the MAK Capital investment in the Company. Michael Kaufman, the Chairman of the Company’s Board of Directors, is the Chief Executive Officer of MAK Capital.
+
+Schedule II - Valuation and Qualifying Accounts Years ended March 31, 2023, 2022 and 2021
+
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| (In thousands) |  | Balance at beginning of year | |  |  | Charged to costs and expenses | |  |  | Deductions | |  |  | Balance at end of year | |  |
+| 2023 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
+| Deferred tax valuation allowance |  | $ | 69,515 |  |  | $ | — |  |  | $ | (1,587 | ) |  | $ | 67,928 |  |
+| Allowance for expected credit losses |  | $ | 318 |  |  | $ | 620 |  |  | $ | (328 | ) |  | $ | 610 |  |
+| 2022 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
+| Deferred tax valuation allowance |  | $ | 74,631 |  |  | $ | — |  |  | $ | (5,116 | ) |  | $ | 69,515 |  |
+| Allowance for doubtful accounts |  | $ | 1,220 |  |  | $ | 117 |  |  | $ | (1,019 | ) |  | $ | 318 |  |
+| 2021 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
+| Deferred tax valuation allowance |  | $ | 66,819 |  |  | $ | 7,812 |  |  | $ | — |  |  | $ | 74,631 |  |
+| Allowance for doubtful accounts |  | $ | 1,634 |  |  | $ | 508 |  |  | $ | (922 | ) |  | $ | 1,220 |  |
+
+63
+
+---
+
+[4] doc_id=doc_007617 title=AGYS_2024-05-21_10-K_22_item_16_form_10k_summary_none_71__agilysys_inc_exhibit_index score=0.5762
+AGYS 2024-05-21 10-K 22 item 16 form 10k summary none 71  agilysys inc exhibit index
+
+Agilysys, Inc. 2016 Stock Incentive Plan, which is incorporated herein by reference to Exhibit 10.2 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended September 30, 2018 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000007874918000046/agysex102-93020181.htm) |
+|  |  |  |
+| \*10.7 |  | [Form of Executive Employment Agreement, which is incorporated herein by reference to Exhibit 10.1 to Agilysys, Inc.'s Current Report on Form 8-K filed January 31, 2018 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000007874918000011/formofnewexecemploymentagr.htm) |
+|  |  |  |
+| \*10.8 |  | [Employment Agreement dated February 10, 2020 by and between Agilysys, Inc. and Ramesh Srinivasan, which is incorporated by reference to Exhibit 10.1 to Agilysys, Inc.’s Current Report on Form 8-K filed February 13, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459020004413/agys-ex101_9.htm) |
+|  |  |  |
+| \*10.9 |  | [Stock Appreciation Right Agreement dated January 3, 2017, by and between Agilysys, Inc. and Ramesh Srinivasan, which is incorporated herein by reference to Exhibit 10(s) to Agilysys, Inc.'s. Annual Report on Form 10-K for the year ended March 31, 2017 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000007874917000021/srinivasanfy17ssaragreemen.htm) |
+|  |  |  |
+| \*10.10 |  | [Stock Appreciation Right Agreement dated February 10, 2020, by and between Agilysys, Inc. and Ramesh Srinivasan, which is incorporated by reference to Exhibit 10.11 to Agilysys, Inc.'s Amendment to Annual Report on Form 10-K filed May 22, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459020026737/agys-ex1011_499.htm) |
+|  |  |  |
+| \*10.11 |  | [Agilysys, Inc. 2020 Equity Incentive Plan, as Amended and Restated, which is incorporated by reference to Exhibit 10.1 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex101_18.htm) |
+|  |  |  |
+| \*10.12 |  | [Agilysys, Inc. Employee Stock Purchase Plan, which is incorporated by reference to Exhibit 10.2 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex102_17.htm) |
+|  |  |  |
+
+72
+
+---
+
+|  |  |  |
+| --- | --- | --- |
+|  |  |  |
+| \*10.13 |  | [Amendment to Agilysys, Inc. Employee Stock Purchase Plan, which is incorporated by reference to Exhibit 10.1 to Agilysys, Inc.’s Quarterly Report on Form 10-Q filed January 25, 2024 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000095017024007518/agys-ex10_1.htm) |
+|  |  |  |
+| \*10.14 |  | [Form of Stock Appreciation Rights Agreement (Time Vesting), which is incorporated by reference to Exhibit 10.3 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex103_16.htm) |
+|  |  |  |
+| \*10.15 |  | [Form Stock Appreciation Rights Agreement (Performance Vesting), which is incorporated by reference to Exhibit 10.4 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex104_15.htm) |
+|  |  |  |
+| \*10.16 |  | [Form of Restricted Stock Award Agreement, which is incorporated by reference to Exhibit 10.5 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex105_14.htm) |
+|  |  |  |
+| \*10.17 |  | [Form of Restricted Stock Award Agreement for Non-Employee Directors, which is incorporated by reference to Exhibit 10.6 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex106_13.htm) |
+|  |  |  |
+| \*10.18 |  | [Form of Indemnification Agreement entered into by and between Agilysys, Inc. and each of its Directors and Officers, which is incorporated by reference to Exhibit 10.1 to Agilysys, Inc.’s Current Report on Form 8-K filed February 9, 2022 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459022004309/agys-ex101_6.htm) |
+|  |  |  |
+| \*10.19 |  | [Amended and Restated Employment Agreement dated March 10, 2023, by and
+
+---
+
+[5] doc_id=doc_007755 title=AGYS_2022-01-27_10-Q_04_item_2_managements_discussion_and_analysis_of_financial_condition_and_results_of_operations_in score=0.5713
+AGYS 2022-01-27 10-Q 04 item 2 managements discussion and analysis of financial condition and results of operations in
+
+fiscal 2021 due to higher than usual share-based and other incentive compensation in the prior year which did not reoccur in the current fiscal year.
+
+19
+
+---
+
+[Table of Contents](#AGILYSYS_INC1)
+
+Sales and marketing. Sales and marketing increased $0.6 million, or 18.5%, in the third quarter of fiscal 2022 compared with the third quarter of fiscal 2021 due to the return of some travel costs due to increased in-person selling activity, and higher advertising and promotions costs due to increased marketing event and trade show activity.
+
+General and administrative. General and administrative decreased $0.7
+
+Question:
+How did AGILYSYS INC's global employee count and geographic distribution change from March 31, 2020, to March 31, 2021?
+
+Answer:
