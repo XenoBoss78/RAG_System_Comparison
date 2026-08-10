@@ -1,0 +1,13 @@
+# Tested with Python 3.12. Pinning direct dependencies keeps experiments repeatable.
+--extra-index-url https://download.pytorch.org/whl/cu130
+
+numpy==2.5.1
+chromadb==1.5.9
+openai==2.46.0
+sentence-transformers==5.6.0
+torch==2.13.0+cu130
+ipykernel==7.3.0
+
+# fin_rate_local.py imports the sibling Engram clone at commit
+# ed0e53a8b1626158282afe3d0ec252d52fe17749.
+-e ../engram

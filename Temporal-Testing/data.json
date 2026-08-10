@@ -1,0 +1,41 @@
+{
+  "question": "How did AGILYSYS INC's global employee count and geographic distribution change from March 31, 2020, to March 31, 2021?",
+  "answer": "Unfortunately, the provided text does not contain information about AGILYSYS INC's global employee count and geographic distribution as of March 31, 2020, or March 31, 2021. The text appears to be a collection of SEC filings and financial reports from various years, but it does not include any specific information about the company's workforce.\n\nHowever, I can suggest some possible sources where you may find this information:\n\n* AGILYSYS INC's annual reports (10-K) for the fiscal years 2020 and 2021\n* The company's quarterly reports (10-Q) for the quarters ended March 31, 2020, and March 31, 2021\n* The company's website or investor relations section, which may provide information on employee count and geographic distribution\n\nPlease note that this information is not included in the provided text, and you would need to search through other sources to find it.",
+  "sources": [
+    {
+      "rank": 1,
+      "id": "doc_007806::chunk_0032",
+      "doc_id": "doc_007806",
+      "title": "AGYS_2022-05-23_10-K_12_item_8_financial_statements_and_supplementary_data_agilysys_inc_and_subsidiaries_annual_report_on_form_10k_",
+      "score": 0.5882025957107544
+    },
+    {
+      "rank": 2,
+      "id": "doc_007650::chunk_0006",
+      "doc_id": "doc_007650",
+      "title": "AGYS_2023-05-19_10-K_12_item_8_financial_statements_and_supplementary_data_agilysys_inc_and_subsidiaries_annual_report_on_form_10k_",
+      "score": 0.581229567527771
+    },
+    {
+      "rank": 3,
+      "id": "doc_007650::chunk_0031",
+      "doc_id": "doc_007650",
+      "title": "AGYS_2023-05-19_10-K_12_item_8_financial_statements_and_supplementary_data_agilysys_inc_and_subsidiaries_annual_report_on_form_10k_",
+      "score": 0.5768648982048035
+    },
+    {
+      "rank": 4,
+      "id": "doc_007617::chunk_0001",
+      "doc_id": "doc_007617",
+      "title": "AGYS_2024-05-21_10-K_22_item_16_form_10k_summary_none_71__agilysys_inc_exhibit_index",
+      "score": 0.5762026309967041
+    },
+    {
+      "rank": 5,
+      "id": "doc_007755::chunk_0004",
+      "doc_id": "doc_007755",
+      "title": "AGYS_2022-01-27_10-Q_04_item_2_managements_discussion_and_analysis_of_financial_condition_and_results_of_operations_in",
+      "score": 0.5712881684303284
+    }
+  ]
+}
