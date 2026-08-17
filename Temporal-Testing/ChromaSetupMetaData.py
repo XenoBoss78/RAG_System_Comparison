@@ -28,6 +28,8 @@ DEFAULT_BGE_MODEL = "BAAI/bge-m3"
 DEFAULT_LLM_BACKEND = "ollama"
 DEFAULT_LLM_MODEL = "llama3.1:8b"
 DEFAULT_OLLAMA_URL = "http://localhost:11434/api/generate"
+DEFAULT_OLLAMA_EMBEDDING_MODEL = "embeddinggemma:latest"
+DEFAULT_OLLAMA_EMBED_URL = "http://localhost:11434/api/embed"
 COMPANY_ALIAS_FILE = "company_alias_map.json"
 
 CHUNK_SIZE_TOKENS = 512
@@ -166,6 +168,124 @@ def _sentence_transformer_embedding_function(*, model_name: str, device: str) ->
     )
 
 
+class OllamaEmbeddingFunction:
+    """Chroma-compatible embedding function backed by a local Ollama model."""
+
+    def __init__(
+        self,
+        *,
+        model_name: str = DEFAULT_OLLAMA_EMBEDDING_MODEL,
+        ollama_embed_url: str = DEFAULT_OLLAMA_EMBED_URL,
+        truncate: bool = True,
+        batch_size: int = 32,
+    ) -> None:
+        if batch_size <= 0:
+            raise ValueError("Ollama embedding batch_size must be positive")
+        self.model_name = model_name
+        self.ollama_embed_url = ollama_embed_url
+        self.truncate = truncate
+        self.batch_size = batch_size
+
+    def __call__(self, input: Any) -> list[list[float]]:
+        if isinstance(input, str):
+            documents = [input]
+        else:
+            documents = [str(document) for document in input]
+
+        embeddings: list[list[float]] = []
+        for start in range(0, len(documents), self.batch_size):
+            embeddings.extend(self._embed_batch(documents[start:start + self.batch_size]))
+        return embeddings
+
+    def embed_documents(
+        self,
+        texts: list[str] | None = None,
+        **kwargs: Any,
+    ) -> list[list[float]]:
+        """LangChain-compatible method for embedding multiple documents."""
+        if texts is None:
+            texts = kwargs.get("input") or kwargs.get("documents") or kwargs.get("texts")
+        if texts is None:
+            raise TypeError("embed_documents requires texts, input, or documents")
+        return self(texts)
+
+    def embed_query(
+        self,
+        text: Any = None,
+        **kwargs: Any,
+    ) -> list[float] | list[list[float]]:
+        """Embed one query, or preserve Chroma's nested shape when given a list."""
+        if text is None:
+            text = kwargs.get("input") or kwargs.get("query") or kwargs.get("text")
+        if text is None:
+            raise TypeError("embed_query requires text, input, or query")
+        if not isinstance(text, str):
+            return self(text)
+        embeddings = self([text])
+        return embeddings[0] if embeddings else []
+
+    def embed_query_for_chroma(self, text: str) -> list[list[float]]:
+        """Return the nested query embedding shape expected by Chroma query_embeddings."""
+        return self([text])
+
+    def _embed_batch(self, documents: list[str]) -> list[list[float]]:
+        payload = {
+            "model": self.model_name,
+            "input": documents,
+            "truncate": self.truncate,
+        }
+        request = urllib.request.Request(
+            self.ollama_embed_url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=300) as response:
+                result = json.loads(response.read().decode("utf-8"))
+        except urllib.error.URLError as exc:
+            raise RuntimeError(
+                "Could not reach Ollama embeddings. Make sure Ollama is running locally "
+                f"and the embedding model is available: ollama pull {self.model_name}"
+            ) from exc
+
+        embeddings = result.get("embeddings")
+        if not isinstance(embeddings, list):
+            raise RuntimeError(
+                "Ollama embedding response did not contain an 'embeddings' list."
+            )
+        return embeddings
+
+    @staticmethod
+    def name() -> str:
+        return "ollama"
+
+    @staticmethod
+    def default_space() -> str:
+        return "cosine"
+
+    @staticmethod
+    def supported_spaces() -> list[str]:
+        return ["cosine", "l2", "ip"]
+
+    def get_config(self) -> dict[str, Any]:
+        return {
+            "model_name": self.model_name,
+            "ollama_embed_url": self.ollama_embed_url,
+            "truncate": self.truncate,
+            "batch_size": self.batch_size,
+        }
+
+    @staticmethod
+    def build_from_config(config: dict[str, Any]) -> "OllamaEmbeddingFunction":
+        return OllamaEmbeddingFunction(
+            model_name=config.get("model_name", DEFAULT_OLLAMA_EMBEDDING_MODEL),
+            ollama_embed_url=config.get("ollama_embed_url", DEFAULT_OLLAMA_EMBED_URL),
+            truncate=bool(config.get("truncate", True)),
+            batch_size=int(config.get("batch_size", 32)),
+        )
+
+
 def _resolve_bge_model_name(model_name: str) -> str:
     normalized_model_name = model_name.strip()
     if not normalized_model_name or normalized_model_name == DEFAULT_EMBEDDING_MODEL:
@@ -180,6 +300,8 @@ def create_embedding_function(
     backend: str = DEFAULT_EMBEDDING_BACKEND,
     model_name: str = DEFAULT_EMBEDDING_MODEL,
     device: str = "cpu",
+    ollama_embed_url: str = DEFAULT_OLLAMA_EMBED_URL,
+    ollama_embedding_batch_size: int = 32,
     seed: int = DEFAULT_SEED,
 ) -> Any:
     """
@@ -190,6 +312,7 @@ def create_embedding_function(
     Use backend="bge" to load BGE through Sentence Transformers. If model_name
     is not supplied, BAAI/bge-m3 is used. Short BGE aliases include "small",
     "base", "large", and "m3".
+    Use backend="ollama" to embed through a local Ollama embedding model.
     """
     seed_everything(seed)
     normalized_backend = backend.lower().replace("_", "-")
@@ -205,9 +328,20 @@ def create_embedding_function(
             model_name=_resolve_bge_model_name(model_name),
             device=device,
         )
+    if normalized_backend == "ollama":
+        selected_model = (
+            DEFAULT_OLLAMA_EMBEDDING_MODEL
+            if not model_name or model_name == DEFAULT_EMBEDDING_MODEL
+            else model_name
+        )
+        return OllamaEmbeddingFunction(
+            model_name=selected_model,
+            ollama_embed_url=ollama_embed_url,
+            batch_size=ollama_embedding_batch_size,
+        )
 
     raise ValueError(
-        "Unsupported embedding backend. Use 'default', 'sentence-transformers', or 'bge'."
+        "Unsupported embedding backend. Use 'default', 'sentence-transformers', 'bge', or 'ollama'."
     )
 
 
@@ -272,6 +406,65 @@ def _record_title(record: dict[str, Any]) -> str:
 def _record_id(record: dict[str, Any], line_number: int) -> str:
     doc_id = record.get("_id", record.get("id", f"line_{line_number}"))
     return str(doc_id)
+
+
+def _normalize_document_ids(document_ids: Any) -> set[str] | None:
+    if document_ids is None:
+        return None
+    if isinstance(document_ids, str):
+        raw_value = document_ids.strip()
+        if not raw_value:
+            return None
+        if raw_value.startswith("["):
+            parsed = json.loads(raw_value)
+            return _normalize_document_ids(parsed)
+        document_ids = re.split(r"[\s,]+", raw_value)
+
+    normalized = {
+        str(document_id).strip()
+        for document_id in document_ids
+        if str(document_id).strip()
+    }
+    return normalized or None
+
+
+def _parse_document_ids_argument(
+    raw_document_ids: str | None,
+    repeated_document_ids: list[str] | None,
+) -> list[str] | None:
+    normalized: set[str] = set()
+    for candidate in (
+        _normalize_document_ids(raw_document_ids),
+        _normalize_document_ids(repeated_document_ids),
+    ):
+        if candidate:
+            normalized.update(candidate)
+    return sorted(normalized) if normalized else None
+
+
+def load_document_ids_file(path: Path) -> set[str]:
+    """Load subset IDs from a JSON list/object or a one-ID-per-line text file."""
+    path = path.expanduser().resolve()
+    if not path.exists():
+        raise FileNotFoundError(f"Document ID file not found: {path}")
+
+    raw = path.read_text(encoding="utf-8").strip()
+    if not raw:
+        raise ValueError(f"Document ID file is empty: {path}")
+    try:
+        parsed: Any = json.loads(raw)
+    except json.JSONDecodeError:
+        parsed = [line.strip() for line in raw.splitlines() if line.strip()]
+    if isinstance(parsed, dict):
+        parsed = parsed.get("document_ids")
+
+    normalized = _normalize_document_ids(parsed)
+    if normalized is None:
+        raise ValueError(
+            "Document ID file must contain a JSON list, a JSON object with a "
+            "'document_ids' list, or one document ID per line."
+        )
+    return normalized
 
 
 def _parse_title_metadata(title: str) -> dict[str, Any]:
@@ -781,6 +974,7 @@ def build_chroma_database(
     chunk_overlap_tokens: int = CHUNK_OVERLAP_TOKENS,
     batch_size: int = BATCH_SIZE,
     embedding_function: Any | None = None,
+    document_ids: list[str] | set[str] | tuple[str, ...] | str | None = None,
     reset_collection: bool = True,
     seed: int = DEFAULT_SEED,
 ) -> dict[str, Any]:
@@ -790,11 +984,14 @@ def build_chroma_database(
     The corpus is expected to be JSONL with fields like _id, title, and text.
     Passing a custom local embedding_function lets you use Sentence Transformers,
     Ollama embeddings, or another local embedding backend.
+    Passing document_ids builds a smaller database from only those corpus records.
     """
     seed_everything(seed)
     chromadb = _require_chromadb()
     corpus_path = Path(corpus_path)
     db_dir = Path(db_dir)
+    target_document_ids = _normalize_document_ids(document_ids)
+    matched_document_ids: set[str] = set()
 
     if not corpus_path.exists():
         raise FileNotFoundError(f"Corpus file not found: {corpus_path}")
@@ -818,6 +1015,7 @@ def build_chroma_database(
 
     started_at = _utc_now_iso()
     start_time = time.perf_counter()
+    records_read = 0
     documents_seen = 0
     chunks_indexed = 0
     tokens_processed = 0
@@ -829,10 +1027,15 @@ def build_chroma_database(
             if not line.strip():
                 continue
 
+            records_read += 1
             record = json.loads(line)
-            documents_seen += 1
 
             doc_id = _record_id(record, line_number)
+            if target_document_ids is not None and doc_id not in target_document_ids:
+                continue
+
+            documents_seen += 1
+            matched_document_ids.add(doc_id)
             title = _record_title(record)
             text = _record_text(record)
             title_metadata = _parse_title_metadata(title)
@@ -879,6 +1082,12 @@ def build_chroma_database(
                 if len(batch["ids"]) >= batch_size:
                     _flush_batch(collection, batch)
 
+            if (
+                target_document_ids is not None
+                and matched_document_ids == target_document_ids
+            ):
+                break
+
     _flush_batch(collection, batch)
     alias_payload = {
         ticker: sorted(aliases)
@@ -894,7 +1103,15 @@ def build_chroma_database(
         "corpus_path": str(corpus_path),
         "database_dir": str(db_dir),
         "collection_name": collection_name,
+        "records_read": records_read,
         "documents_seen": documents_seen,
+        "document_ids_filter": sorted(target_document_ids) if target_document_ids else None,
+        "document_ids_matched": sorted(matched_document_ids),
+        "document_ids_missing": (
+            sorted(target_document_ids - matched_document_ids)
+            if target_document_ids
+            else []
+        ),
         "chunks_indexed": chunks_indexed,
         "collection_count": collection.count(),
         "chunk_size_tokens": chunk_size_tokens,
@@ -1061,6 +1278,16 @@ def _generate_with_ollama(
     seed: int = DEFAULT_SEED,
     json_mode: bool = False,
 ) -> str:
+    # Most callers use the full generate endpoint, but callers that also use
+    # Ollama's embedding API commonly keep only its base URL.  Accept either
+    # form so a metadata-filter request cannot accidentally be sent to `/`.
+    normalized_url = ollama_url.rstrip("/")
+    if not normalized_url.endswith("/api/generate"):
+        normalized_url = (
+            f"{normalized_url}/generate"
+            if normalized_url.endswith("/api")
+            else f"{normalized_url}/api/generate"
+        )
     payload = {
         "model": model,
         "prompt": prompt,
@@ -1069,8 +1296,11 @@ def _generate_with_ollama(
     }
     if json_mode:
         payload["format"] = "json"
+        # Qwen3 otherwise puts a valid JSON answer in its `thinking` field
+        # and leaves `response` empty, which breaks structured filtering.
+        payload["think"] = False
     request = urllib.request.Request(
-        ollama_url,
+        normalized_url,
         data=json.dumps(payload).encode("utf-8"),
         headers={"Content-Type": "application/json"},
         method="POST",
@@ -1078,13 +1308,21 @@ def _generate_with_ollama(
     try:
         with urllib.request.urlopen(request, timeout=300) as response:
             result = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace").strip()
+        raise RuntimeError(
+            f"Ollama request to {normalized_url} failed with HTTP {exc.code}"
+            f"{f': {detail}' if detail else ''}"
+        ) from exc
     except urllib.error.URLError as exc:
         raise RuntimeError(
-            "Could not reach Ollama. Make sure Ollama is running locally and "
-            f"the model is available: ollama pull {model}"
+            f"Could not reach Ollama at {normalized_url}. Make sure Ollama is "
+            f"running locally and the model is available: ollama pull {model}"
         ) from exc
 
-    return str(result.get("response", "")).strip()
+    # The fallback supports Qwen3 instances where `think: false` is ignored
+    # by an older Ollama server.
+    return str(result.get("response") or result.get("thinking") or "").strip()
 
 
 def generate_answer_from_chunks(
@@ -1200,10 +1438,30 @@ def _main() -> None:
     parser.add_argument("--corpus", type=Path, default=DEFAULT_CORPUS_PATH)
     parser.add_argument("--db-dir", type=Path, default=DEFAULT_DB_DIR)
     parser.add_argument("--collection", default=DEFAULT_COLLECTION_NAME)
+    parser.add_argument(
+        "--doc-id",
+        dest="document_ids",
+        action="append",
+        default=[],
+        help="Only build from this corpus document ID. Can be passed more than once.",
+    )
+    parser.add_argument(
+        "--doc-ids",
+        default=None,
+        help="Only build from these document IDs. Accepts comma-separated IDs or a JSON list.",
+    )
+    parser.add_argument(
+        "--document-ids-file",
+        type=Path,
+        help=(
+            "Build from only the corpus document IDs in this JSON list (or a JSON object with "
+            "document_ids) / one-ID-per-line text file."
+        ),
+    )
     parser.add_argument("--top-k", "--top_k", dest="top_k", type=int, default=5)
     parser.add_argument(
         "--embedding-backend",
-        choices=["default", "sentence-transformers", "bge"],
+        choices=["default", "sentence-transformers", "bge", "ollama"],
         default=DEFAULT_EMBEDDING_BACKEND,
         help="Embedding backend to use for build/query.",
     )
@@ -1213,8 +1471,19 @@ def _main() -> None:
         help=(
             "Sentence Transformers model name. With --embedding-backend bge, "
             "defaults to BAAI/bge-m3 and also accepts aliases: small, base, "
-            "large, m3."
+            "large, m3. With --embedding-backend ollama, defaults to embeddinggemma:latest."
         ),
+    )
+    parser.add_argument(
+        "--ollama-embed-url",
+        default=DEFAULT_OLLAMA_EMBED_URL,
+        help="Ollama embedding endpoint.",
+    )
+    parser.add_argument(
+        "--ollama-embedding-batch-size",
+        type=int,
+        default=32,
+        help="Number of texts to send to Ollama per embedding request.",
     )
     parser.add_argument(
         "--device",
@@ -1275,15 +1544,23 @@ def _main() -> None:
         backend=args.embedding_backend,
         model_name=args.embedding_model,
         device=args.device,
+        ollama_embed_url=args.ollama_embed_url,
+        ollama_embedding_batch_size=args.ollama_embedding_batch_size,
         seed=args.seed,
     )
 
     if args.build:
+        document_ids = _parse_document_ids_argument(args.doc_ids, args.document_ids)
+        if args.document_ids_file is not None:
+            document_ids = sorted(
+                set(document_ids or []) | load_document_ids_file(args.document_ids_file)
+            )
         stats = build_chroma_database(
             corpus_path=args.corpus,
             db_dir=args.db_dir,
             collection_name=args.collection,
             embedding_function=embedding_function,
+            document_ids=document_ids,
             reset_collection=not args.no_reset,
             seed=args.seed,
         )

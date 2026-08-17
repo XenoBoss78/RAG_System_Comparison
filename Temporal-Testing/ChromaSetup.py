@@ -12,8 +12,10 @@ from typing import Any, Callable
 
 try:
     from .reproducibility import DEFAULT_SEED, seed_everything
+    from .ChromaSetupMetaData import OllamaEmbeddingFunction
 except ImportError:
     from reproducibility import DEFAULT_SEED, seed_everything
+    from ChromaSetupMetaData import OllamaEmbeddingFunction
 
 
 ROOT_DIR = Path(__file__).resolve().parent
@@ -28,6 +30,8 @@ DEFAULT_BGE_MODEL = "BAAI/bge-m3"
 DEFAULT_LLM_BACKEND = "ollama"
 DEFAULT_LLM_MODEL = "llama3.1:8b"
 DEFAULT_OLLAMA_URL = "http://localhost:11434/api/generate"
+DEFAULT_OLLAMA_EMBEDDING_MODEL = "embeddinggemma:latest"
+DEFAULT_OLLAMA_EMBED_URL = "http://localhost:11434/api/embed"
 
 CHUNK_SIZE_TOKENS = 512
 CHUNK_OVERLAP_TOKENS = 64
@@ -102,6 +106,8 @@ def create_embedding_function(
     backend: str = DEFAULT_EMBEDDING_BACKEND,
     model_name: str = DEFAULT_EMBEDDING_MODEL,
     device: str = "cpu",
+    ollama_embed_url: str = DEFAULT_OLLAMA_EMBED_URL,
+    ollama_embedding_batch_size: int = 32,
     seed: int = DEFAULT_SEED,
 ) -> Any:
     """
@@ -112,6 +118,7 @@ def create_embedding_function(
     Use backend="bge" to load BGE through Sentence Transformers. If model_name
     is not supplied, BAAI/bge-m3 is used. Short BGE aliases include "small",
     "base", "large", and "m3".
+    Use backend="ollama" to embed through a local Ollama embedding model.
     """
     seed_everything(seed)
     normalized_backend = backend.lower().replace("_", "-")
@@ -127,9 +134,20 @@ def create_embedding_function(
             model_name=_resolve_bge_model_name(model_name),
             device=device,
         )
+    if normalized_backend == "ollama":
+        selected_model = (
+            DEFAULT_OLLAMA_EMBEDDING_MODEL
+            if not model_name or model_name == DEFAULT_EMBEDDING_MODEL
+            else model_name
+        )
+        return OllamaEmbeddingFunction(
+            model_name=selected_model,
+            ollama_embed_url=ollama_embed_url,
+            batch_size=ollama_embedding_batch_size,
+        )
 
     raise ValueError(
-        "Unsupported embedding backend. Use 'default', 'sentence-transformers', or 'bge'."
+        "Unsupported embedding backend. Use 'default', 'sentence-transformers', 'bge', or 'ollama'."
     )
 
 
@@ -196,6 +214,52 @@ def _record_id(record: dict[str, Any], line_number: int) -> str:
     return str(doc_id)
 
 
+def _normalize_document_ids(
+    document_ids: list[str] | set[str] | tuple[str, ...] | str | None,
+) -> set[str] | None:
+    if document_ids is None:
+        return None
+    if isinstance(document_ids, str):
+        raw_value = document_ids.strip()
+        if not raw_value:
+            return None
+        if raw_value.startswith("["):
+            return _normalize_document_ids(json.loads(raw_value))
+        document_ids = re.split(r"[\s,]+", raw_value)
+
+    normalized = {
+        str(document_id).strip()
+        for document_id in document_ids
+        if str(document_id).strip()
+    }
+    return normalized or None
+
+
+def load_document_ids_file(path: Path) -> set[str]:
+    """Load subset IDs from a JSON list/object or a one-ID-per-line text file."""
+    path = path.expanduser().resolve()
+    if not path.exists():
+        raise FileNotFoundError(f"Document ID file not found: {path}")
+
+    raw = path.read_text(encoding="utf-8").strip()
+    if not raw:
+        raise ValueError(f"Document ID file is empty: {path}")
+    try:
+        parsed: Any = json.loads(raw)
+    except json.JSONDecodeError:
+        parsed = [line.strip() for line in raw.splitlines() if line.strip()]
+    if isinstance(parsed, dict):
+        parsed = parsed.get("document_ids")
+
+    normalized = _normalize_document_ids(parsed)
+    if normalized is None:
+        raise ValueError(
+            "Document ID file must contain a JSON list, a JSON object with a "
+            "'document_ids' list, or one document ID per line."
+        )
+    return normalized
+
+
 def _flush_batch(collection: Any, batch: dict[str, list[Any]]) -> None:
     if not batch["ids"]:
         return
@@ -239,6 +303,7 @@ def build_chroma_database(
     chunk_overlap_tokens: int = CHUNK_OVERLAP_TOKENS,
     batch_size: int = BATCH_SIZE,
     embedding_function: Any | None = None,
+    document_ids: list[str] | set[str] | tuple[str, ...] | str | None = None,
     reset_collection: bool = True,
     seed: int = DEFAULT_SEED,
 ) -> dict[str, Any]:
@@ -248,11 +313,14 @@ def build_chroma_database(
     The corpus is expected to be JSONL with fields like _id, title, and text.
     Passing a custom local embedding_function lets you use Sentence Transformers,
     Ollama embeddings, or another local embedding backend.
+    Passing document_ids builds a smaller database from only those corpus records.
     """
     seed_everything(seed)
     chromadb = _require_chromadb()
     corpus_path = Path(corpus_path)
     db_dir = Path(db_dir)
+    target_document_ids = _normalize_document_ids(document_ids)
+    matched_document_ids: set[str] = set()
 
     if not corpus_path.exists():
         raise FileNotFoundError(f"Corpus file not found: {corpus_path}")
@@ -276,6 +344,7 @@ def build_chroma_database(
 
     started_at = _utc_now_iso()
     start_time = time.perf_counter()
+    records_read = 0
     documents_seen = 0
     chunks_indexed = 0
     tokens_processed = 0
@@ -287,9 +356,13 @@ def build_chroma_database(
                 continue
 
             record = json.loads(line)
-            documents_seen += 1
-
             doc_id = _record_id(record, line_number)
+            records_read += 1
+            if target_document_ids is not None and doc_id not in target_document_ids:
+                continue
+
+            documents_seen += 1
+            matched_document_ids.add(doc_id)
             title = _record_title(record)
             text = _record_text(record)
             tokens_processed += len(_analyze(text))
@@ -323,13 +396,27 @@ def build_chroma_database(
                 if len(batch["ids"]) >= batch_size:
                     _flush_batch(collection, batch)
 
+            if (
+                target_document_ids is not None
+                and matched_document_ids == target_document_ids
+            ):
+                break
+
     _flush_batch(collection, batch)
 
     stats = {
         "corpus_path": str(corpus_path),
         "database_dir": str(db_dir),
         "collection_name": collection_name,
+        "records_read": records_read,
         "documents_seen": documents_seen,
+        "document_ids_filter": sorted(target_document_ids) if target_document_ids else None,
+        "document_ids_matched": sorted(matched_document_ids),
+        "document_ids_missing": (
+            sorted(target_document_ids - matched_document_ids)
+            if target_document_ids
+            else []
+        ),
         "chunks_indexed": chunks_indexed,
         "collection_count": collection.count(),
         "chunk_size_tokens": chunk_size_tokens,
@@ -590,10 +677,24 @@ def _main() -> None:
     parser.add_argument("--corpus", type=Path, default=DEFAULT_CORPUS_PATH)
     parser.add_argument("--db-dir", type=Path, default=DEFAULT_DB_DIR)
     parser.add_argument("--collection", default=DEFAULT_COLLECTION_NAME)
+    parser.add_argument(
+        "--document-ids-file",
+        type=Path,
+        help=(
+            "Build from only the corpus document IDs in this JSON list (or a JSON object with "
+            "document_ids) / one-ID-per-line text file."
+        ),
+    )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=BATCH_SIZE,
+        help="Chunks added to Chroma at once. Use 256 with the local Ollama embedding backend.",
+    )
     parser.add_argument("--top-k", "--top_k", dest="top_k", type=int, default=5)
     parser.add_argument(
         "--embedding-backend",
-        choices=["default", "sentence-transformers", "bge"],
+        choices=["default", "sentence-transformers", "bge", "ollama"],
         default=DEFAULT_EMBEDDING_BACKEND,
         help="Embedding backend to use for build/query.",
     )
@@ -603,8 +704,19 @@ def _main() -> None:
         help=(
             "Sentence Transformers model name. With --embedding-backend bge, "
             "defaults to BAAI/bge-m3 and also accepts aliases: small, base, "
-            "large, m3."
+            "large, m3. With --embedding-backend ollama, defaults to embeddinggemma:latest."
         ),
+    )
+    parser.add_argument(
+        "--ollama-embed-url",
+        default=DEFAULT_OLLAMA_EMBED_URL,
+        help="Ollama embedding endpoint.",
+    )
+    parser.add_argument(
+        "--ollama-embedding-batch-size",
+        type=int,
+        default=32,
+        help="Number of texts to send to Ollama per embedding request.",
     )
     parser.add_argument(
         "--device",
@@ -638,15 +750,24 @@ def _main() -> None:
         backend=args.embedding_backend,
         model_name=args.embedding_model,
         device=args.device,
+        ollama_embed_url=args.ollama_embed_url,
+        ollama_embedding_batch_size=args.ollama_embedding_batch_size,
         seed=args.seed,
     )
 
     if args.build:
+        document_ids = (
+            load_document_ids_file(args.document_ids_file)
+            if args.document_ids_file is not None
+            else None
+        )
         stats = build_chroma_database(
             corpus_path=args.corpus,
             db_dir=args.db_dir,
             collection_name=args.collection,
             embedding_function=embedding_function,
+            document_ids=document_ids,
+            batch_size=args.batch_size,
             reset_collection=not args.no_reset,
             seed=args.seed,
         )

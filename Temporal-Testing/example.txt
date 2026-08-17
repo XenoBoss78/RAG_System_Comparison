@@ -4,164 +4,205 @@ Cite supporting chunks inline using bracketed source numbers like [1] or [2].
 Keep the answer concise, but include the key numbers, entities, and dates when present.
 
 Retrieved context:
-[1] doc_id=doc_007806 title=AGYS_2022-05-23_10-K_12_item_8_financial_statements_and_supplementary_data_agilysys_inc_and_subsidiaries_annual_report_on_form_10k_ score=0.5882
-AGYS 2022-05-23 10-K 12 item 8 financial statements and supplementary data agilysys inc and subsidiaries annual report on form 10k
+[1] doc_id=doc_005658 title=VCYT_2025-04-29_DEF_00_prologue score=0.6043
+VCYT 2025-04-29 DEF 00 prologue
 
-during the measurement period (up to one year from the acquisition date).
+in connection with the audit of our annual financial statements and review of our quarterly financial statements.
 
-Effective April 1, 2022, ResortSuite became Agilysys Canada, Inc. a wholly-owned subsidiary of Agilysys, Inc.
+(2)Audit-related fees include fees for consultations on accounting and reporting matters for acquisitions.
 
-16. Subsequent Events
+(3)Tax fees consist of tax consulting services.
 
-None.
+(4)Other fees consist of consultations not related to audit or tax fees and access to an online accounting literature database.
 
-17. Related Party Transaction
+Pre-approval Policies and Procedures
 
-See Note 14. Preferred Stock, for description of the MAK Capital investment in the Company. Michael Kaufman, the Chairman of the Company�s Board of Directors, is the Chief Executive Officer of MAK Capital.
+Our Audit Committee’s policy is to pre-approve all audit and permissible non-audit services provided by our independent registered public accounting firm. All of the services provided were pre-approved to the extent required. During the approval process, the Audit Committee considers the impact of the types of services and the related fees on the independence of the independent registered public accounting firm. The services and fees must be deemed compatible with the maintenance of that firm’s independence, including compliance with rules and regulations of the SEC. Throughout the year, the Audit Committee will review any revisions to the estimates of audit and non-audit fees initially approved.
 
-Schedule II - Valuation and Qualifying Accounts Years ended March 31, 2022, 2021 and 2020
-
-|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| (In thousands) |  | Balance at beginning of year | |  |  | Charged to costs and expenses | |  |  | Deductions | |  |  | Balance at end of year | |  |
-| 2022 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
-| Deferred tax valuation allowance |  | $ | 74,631 |  |  | $ | � |  |  | $ | (5,116 | ) |  | $ | 69,515 |  |
-| Allowance for expected credit losses |  | $ | 1,220 |  |  | $ | 117 |  |  | $ | (1,019 | ) |  | $ | 318 |  |
-| 2021 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
-| Deferred tax valuation allowance |  | $ | 66,819 |  |  | $ | 7,812 |  |  | $ | � |  |  | $ | 74,631 |  |
-| Allowance for doubtful accounts |  | $ | 1,634 |  |  | $ | 508 |  |  | $ | (922 | ) |  | $ | 1,220 |  |
-| 2020 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
-| Deferred tax valuation allowance |  | $ | 57,852 |  |  | $ | 8,967 |  |  | $ | � |  |  | $ | 66,819 |  |
-| Allowance for doubtful accounts |  | $ | 788 |  |  | $ | 1,434 |  |  | $ | (588 | ) |  | $ | 1,634 |  |
-
-63
+|  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |
+| 26 | | |  | | | Veracyte 2025 Proxy Statement | | |
 
 ---
 
-[2] doc_id=doc_007650 title=AGYS_2023-05-19_10-K_12_item_8_financial_statements_and_supplementary_data_agilysys_inc_and_subsidiaries_annual_report_on_form_10k_ score=0.5812
-AGYS 2023-05-19 10-K 12 item 8 financial statements and supplementary data agilysys inc and subsidiaries annual report on form 10k
+Proposal Two
 
-and enhance the entire guest journey. Agilysys is also known for its world-class customer-centric service. Many of the top hospitality companies around the world use Agilysys solutions to improve guest loyalty, drive revenue growth, and increase operational efficiencies. Agilysys operates across North America, Europe, the Middle East, Asia-Pacific, and India, with headquarters in Alpharetta, GA.
+Stockholder ratification of the appointment of Ernst & Young LLP as our independent registered public accounting firm for the year ending December 31, 2025 is not required by our amended and restated bylaws or otherwise. However, the Board of Directors is submitting the selection of Ernst & Young LLP to the stockholders for ratification as a matter of corporate practice. If the stockholders fail to ratify the appointment, the Audit Committee will reconsider whether or not to retain that firm. Even if the appointment is ratified, the Audit Committee in its discretion may direct the appointment of a different independent registered public accounting firm at any time during the year if the Audit Committee determines that such a change would be in the best interests of our company and our stockholders.
 
-The Company has just one reportable segment serving the global hospitality industry.
+Required Vote
 
-Reference herein to any particular year or quarter refers to periods within the fiscal year ended March 31. For example, fiscal 2023 refers to the fiscal year ended March 31, 2023.
+Ratification will require the vote of a majority of the shares present at the Annual Meeting or voting by proxy and entitled to vote at the Annual Meeting. Abstentions will have the same effect as votes “AGAINST” this proposal. Broker non-votes will have no effect on this proposal as they are not considered entitled to vote for the foregoing purpose. This proposal is considered to be a routine proposal on which a broker or other nominee has discretionary authority to vote. Accordingly, we do not expect any broker non-votes to result from this proposal.
 
-2. Summary of Significant Accounting Policies
+|  |  |  |  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |  |  |  |
+|  | | |  | | |  | | | ![veracyte-recommendationwhite.gif](vcyt-20250428_g35.gif) | | |
+|  | | | The Board of Directors recommends a vote “FOR” ratification of the appointment of Ernst & Young LLP as our Independent Registered Public Accounting Firm. | | |  | | |
+|  | | |  | | |  | | |
 
-Principles of consolidation. The consolidated financial statements include the accounts of Agilysys, Inc. and subsidiaries. Investments in affiliated companies are accounted for by the equity or cost method, as appropriate. All inter-company accounts have been eliminated.
-
-Use of estimates. Preparation of consolidated financial statements in conformity with U.S. generally accepted accounting principles (�GAAP�) requires management to make estimates and assumptions. These estimates and assumptions affect the reported amounts of assets and liabilities at the date of the financial statements and the reported amounts of revenue and expenses during the reported periods. Actual results could differ from those estimates.
-
-Cash and cash equivalents. We consider all highly liquid investments purchased with an original maturity from date of acquisition of three months or less to be cash equivalents. Other highly liquid investments considered cash equivalents with no established maturity date are fully redeemable on demand (without penalty) with settlement of principal and accrued interest on the same or following business day after instruction to redeem. Cash equivalent investments are readily convertible to cash with no penalty and can include certificates of deposit, commercial paper, treasury bills, money market funds and other investments. Commercial paper cash equivalents totaled $5.0 million and $15.0 million as of March 31, 2023 and March 31, 2022, respectively. We determine the fair value of commercial paper using significant other observable inputs (level 2) based on pricing from independent sources that use quoted prices in active markets for identical assets or other observable inputs including benchmark yields and interest rates.
-
-Allowance for expected credit losses. We maintain allowances for expected credit losses for estimated losses resulting from the inability or unwillingness of our customers to make required payments. We base our expected credit loss model on historical experience, adjusted for current conditions and reasonable and supportable forecasts. To help mitigate the associated credit risk we perform periodic credit evaluations of our customers.
-
-Customer credit allowance. We maintain allowances for estimated customer credits. Credits are typically due to the timing or amount of customer invoices processed for specific services, including professional and subscription, and maintenance coverage. In many cases, there has not been clear or timely communication of the need to adjust coverage or service at a location in advance of when we invoice for the associated coverage or service. We will issue a credit after agreeing to the service or coverage adjustment as requested by the customer within the terms of our contract.
-
-Inventories. Our inventories are
+|  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |
+| Veracyte 2025 Proxy Statement | | |  | | | 27 | | |
 
 ---
 
-[3] doc_id=doc_007650 title=AGYS_2023-05-19_10-K_12_item_8_financial_statements_and_supplementary_data_agilysys_inc_and_subsidiaries_annual_report_on_form_10k_ score=0.5769
-AGYS 2023-05-19 10-K 12 item 8 financial statements and supplementary data agilysys inc and subsidiaries annual report on form 10k
+|  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |
+|  | | |  | | | ![Multi-color Logomark_RGB.jpg](vcyt-20250428_g7.jpg) | | |
 
-2023 and 2022, respectively. The consolidated statement of operations includes these costs in other charges.
+|  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |
+| PROPOSAL THREE | | | | | |
+|  | | |  | | |
 
-62
+Advisory Vote on the Compensation of Our Named Executive Officers
 
----
+In accordance with the rules of the SEC, we are providing stockholders with an opportunity to make a non-binding, advisory vote on the compensation of our named executive officers. This non-binding advisory vote is commonly referred to as a “say on pay” vote.
 
-Revenue attributable to ResortSuite included in our consolidated statement of operations was $5.2 million and $1.3 million for the year ended March 31, 2023 and 2022, respectively. The pro forma impact of the business combination during the two years ended March 31, 2022 was not material to our historical consolidated operating results and is therefore not presented.
-
-Effective April 1, 2022, ResortSuite became Agilysys Canada, Inc. a wholly-owned subsidiary of Agilysys, Inc.
-
-16. Subsequent Events
-
-None.
-
-17. Related Party Transaction
-
-See Note 14. Preferred Stock, for description of the MAK Capital investment in the Company. Michael Kaufman, the Chairman of the Company�s Board of Directors, is the Chief Executive Officer of MAK Capital.
-
-Schedule II - Valuation and Qualifying Accounts Years ended March 31, 2023, 2022 and 2021
-
-|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| (In thousands) |  | Balance at beginning of year | |  |  | Charged to costs and expenses | |  |  | Deductions | |  |  | Balance at end of year | |  |
-| 2023 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
-| Deferred tax valuation allowance |  | $ | 69,515 |  |  | $ | � |  |  | $ | (1,587 | ) |  | $ | 67,928 |  |
-| Allowance for expected credit losses |  | $ | 318 |  |  | $ | 620 |  |  | $ | (328 | ) |  | $ | 610 |  |
-| 2022 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
-| Deferred tax valuation allowance |  | $ | 74,631 |  |  | $ | � |  |  | $ | (5,116 | ) |  | $ | 69,515 |  |
-| Allowance for doubtful accounts |  | $ | 1,220 |  |  | $ | 117 |  |  | $ | (1,019 | ) |  | $ | 318 |  |
-| 2021 |  |  | |  |  |  | |  |  |  | |  |  |  | |  |
-| Deferred tax valuation allowance |  | $ | 66,819 |  |  | $ | 7,812 |  |  | $ | � |  |  | $ | 74,631 |  |
-| Allowance for doubtful accounts |  | $ | 1,634 |  |  | $ | 508 |  |  | $ | (922 | ) |  | $ | 1,220 |  |
-
-63
+Stockholders are urged to read the “Executive Compensation” section of this Proxy Statement, which discusses how our executive compensation policies and
 
 ---
 
-[4] doc_id=doc_007617 title=AGYS_2024-05-21_10-K_22_item_16_form_10k_summary_none_71__agilysys_inc_exhibit_index score=0.5762
-AGYS 2024-05-21 10-K 22 item 16 form 10k summary none 71  agilysys inc exhibit index
+[2] doc_id=doc_005658 title=VCYT_2025-04-29_DEF_00_prologue score=0.5873
+VCYT 2025-04-29 DEF 00 prologue
 
-Agilysys, Inc. 2016 Stock Incentive Plan, which is incorporated herein by reference to Exhibit 10.2 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended September 30, 2018 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000007874918000046/agysex102-93020181.htm) |
-|  |  |  |
-| \*10.7 |  | [Form of Executive Employment Agreement, which is incorporated herein by reference to Exhibit 10.1 to Agilysys, Inc.'s Current Report on Form 8-K filed January 31, 2018 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000007874918000011/formofnewexecemploymentagr.htm) |
-|  |  |  |
-| \*10.8 |  | [Employment Agreement dated February 10, 2020 by and between Agilysys, Inc. and Ramesh Srinivasan, which is incorporated by reference to Exhibit 10.1 to Agilysys, Inc.�s Current Report on Form 8-K filed February 13, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459020004413/agys-ex101_9.htm) |
-|  |  |  |
-| \*10.9 |  | [Stock Appreciation Right Agreement dated January 3, 2017, by and between Agilysys, Inc. and Ramesh Srinivasan, which is incorporated herein by reference to Exhibit 10(s) to Agilysys, Inc.'s. Annual Report on Form 10-K for the year ended March 31, 2017 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000007874917000021/srinivasanfy17ssaragreemen.htm) |
-|  |  |  |
-| \*10.10 |  | [Stock Appreciation Right Agreement dated February 10, 2020, by and between Agilysys, Inc. and Ramesh Srinivasan, which is incorporated by reference to Exhibit 10.11 to Agilysys, Inc.'s Amendment to Annual Report on Form 10-K filed May 22, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459020026737/agys-ex1011_499.htm) |
-|  |  |  |
-| \*10.11 |  | [Agilysys, Inc. 2020 Equity Incentive Plan, as Amended and Restated, which is incorporated by reference to Exhibit 10.1 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex101_18.htm) |
-|  |  |  |
-| \*10.12 |  | [Agilysys, Inc. Employee Stock Purchase Plan, which is incorporated by reference to Exhibit 10.2 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex102_17.htm) |
-|  |  |  |
+accordance with generally accepted accounting principles, or to assess or determine the effectiveness of Veracyte’s internal control over financial reporting.
 
-72
+Within this framework, the Audit Committee has reviewed and discussed with management our audited financial statements as of and for the year ended December 31, 2024. The Audit Committee has also discussed Auditing Standard No. 1301 adopted by the Public Company Accounting Oversight Board (United States) regarding “Communications with Audit Committees.” In addition, the Audit Committee has received the written disclosures and the letter from the independent registered public accounting firm required by applicable requirements of the Public Company Accounting Oversight Board regarding the independent registered public accounting firm’s communications with the Audit Committee concerning independence, and has discussed with the independent registered public accounting firm the independent registered public accounting firm’s independence.
+
+Based upon these reviews and discussions, the Audit Committee recommended to the Board of Directors that the audited financial statements be included in our Annual Report on Form 10-K for the year ended December 31, 2024.
+
+Audit Committee
+
+Karin Eastham
+
+Jens Holstein (Chair)
+
+Evan Jones
+
+|  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |
+| 72 | | |  | | | Veracyte 2025 Proxy Statement | | |
 
 ---
+
+|  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |
+|  | | |  | | | ![Multi-color Logomark_RGB.jpg](vcyt-20250428_g7.jpg) | | |
 
 |  |  |  |
 | --- | --- | --- |
 |  |  |  |
-| \*10.13 |  | [Amendment to Agilysys, Inc. Employee Stock Purchase Plan, which is incorporated by reference to Exhibit 10.1 to Agilysys, Inc.�s Quarterly Report on Form 10-Q filed January 25, 2024 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000095017024007518/agys-ex10_1.htm) |
-|  |  |  |
-| \*10.14 |  | [Form of Stock Appreciation Rights Agreement (Time Vesting), which is incorporated by reference to Exhibit 10.3 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex103_16.htm) |
-|  |  |  |
-| \*10.15 |  | [Form Stock Appreciation Rights Agreement (Performance Vesting), which is incorporated by reference to Exhibit 10.4 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex104_15.htm) |
-|  |  |  |
-| \*10.16 |  | [Form of Restricted Stock Award Agreement, which is incorporated by reference to Exhibit 10.5 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex105_14.htm) |
-|  |  |  |
-| \*10.17 |  | [Form of Restricted Stock Award Agreement for Non-Employee Directors, which is incorporated by reference to Exhibit 10.6 to Agilysys, Inc.'s Quarterly Report on Form 10-Q for the quarter ended December 31, 2020 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459021002613/agys-ex106_13.htm) |
-|  |  |  |
-| \*10.18 |  | [Form of Indemnification Agreement entered into by and between Agilysys, Inc. and each of its Directors and Officers, which is incorporated by reference to Exhibit 10.1 to Agilysys, Inc.�s Current Report on Form 8-K filed February 9, 2022 (File No. 000-05734).](https://www.sec.gov/Archives/edgar/data/78749/000156459022004309/agys-ex101_6.htm) |
-|  |  |  |
-| \*10.19 |  | [Amended and Restated Employment Agreement dated March 10, 2023, by and
+|  | | |
+
+Certain Relationships and Related Party Transactions
+
+In addition to the compensation arrangements of our directors and NEOs discussed elsewhere in this Proxy Statement, the following is a description of transactions since January 1, 2024, to which we have been or will be a party, and in which the amount involved exceeded or will exceed $120,000 and in which any of our directors, executive officers, beneficial holders of more than 5% of our capital stock, or entities affiliated with, or immediate family members of, any of the foregoing, had or will have a direct or indirect material interest.
+
+Indemnification Agreements
+
+We have entered into indemnification agreements with our directors and executive officers. These agreements require us to indemnify these individuals to the fullest extent permitted under Delaware law against liabilities that may arise by reason of their service to us, and to advance expenses incurred as a result of any proceeding against them as to which they could be indemnified.
+
+Related Party Transaction Approval
+
+We have a formal policy that our executive officers, directors, director nominees, holders of more than 5% of any class of our voting securities, and any member of the immediate family of and any entity affiliated with any of the foregoing persons, are not permitted to enter into a transaction in which we are or will be a party and in which the amount involved exceeds $120,000 without the prior consent of our Audit Committee. Any request for us to enter into such a transaction must first be presented to our Audit Committee, or if a member of our Audit Committee is involved in the transaction, to the disinterested and independent members of our Board of Directors for review, consideration and approval. In approving or rejecting any such proposal, the disinterested and independent members of our Board of Directors will consider all relevant facts and circumstances reasonably available to them.
+
+|  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |
+| Veracyte 2025 Proxy Statement | | |  | | | 73 | | |
 
 ---
 
-[5] doc_id=doc_007755 title=AGYS_2022-01-27_10-Q_04_item_2_managements_discussion_and_analysis_of_financial_condition_and_results_of_operations_in score=0.5713
-AGYS 2022-01-27 10-Q 04 item 2 managements discussion and analysis of financial condition and results of operations in
-
-fiscal 2021 due to higher than usual share-based and other incentive compensation in the prior year which did not reoccur in the current fiscal year.
-
-19
+|  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |
+|  | | |  | | | ![Multi-color Logomark_RGB.jpg](vcyt-20250428_g7.jpg
 
 ---
 
-[Table of Contents](#AGILYSYS_INC1)
+[3] doc_id=doc_005658 title=VCYT_2025-04-29_DEF_00_prologue score=0.5771
+VCYT 2025-04-29 DEF 00 prologue
 
-Sales and marketing.�Sales and marketing increased $0.6 million, or 18.5%, in the third quarter of fiscal 2022 compared with the third quarter of fiscal 2021 due to the return of some travel costs due to increased in-person selling activity, and higher advertising and promotions costs due to increased marketing event and trade show activity.
+addition, the policy in effect in 2024 provided that on the first business day after each Annual Meeting of Stockholders, each non-employee director who continues to serve on our Board of Directors and who has served as a director for at least six months would be automatically granted RSUs valued on the grant date at approximately $250,000 (the “Annual RSUs”). The Annual RSUs vest in full on the first anniversary of the date of grant or, if earlier, the date of the next Annual Meeting of Stockholders. The vesting of the RSUs described above will accelerate in full upon a change in control. Pursuant to the terms of the 2023 Plan, no non-employee director may receive equity awards that, when combined with cash compensation received for service as a non-employee director, exceeds $750,000 in value in any calendar year, or $1,500,000 in value in the calendar year in which such director first joins our Board of Directors.
 
-General and administrative.�General and administrative decreased $0.7
+In February 2025, our Compensation Committee and Board of Directors reviewed our then-current non-employee director compensation program and competitive market data on the same, and determined to retain the cash retainer without change from 2024 (as detailed above). In February 2025, our Compensation Committee of the Board of Directors also determined to reduce the initial grant for new non-employee directors to $250,000 from $500,000, while retaining the annual equity awards at $250,000. Additionally, beginning in 2025, the initial grant is to be prorated based on whole months of service prior to the Annual Meeting of Stockholders, and the six-month service requirement for the annual grant was removed.
+
+|  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |
+| Veracyte 2025 Proxy Statement | | |  | | | 25 | | |
+
+---
+
+|  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |
+|  | | |  | | | ![Multi-color Logomark_RGB.jpg](vcyt-20250428_g7.jpg) | | |
+
+|  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |
+| PROPOSAL TWO | | | | | |
+|  | | |  | | |
+
+Ratification of Appointment of Independent Registered Public Accounting Firm
+
+The Audit Committee has appointed Ernst & Young LLP as our independent registered public accounting firm for the year ending December 31, 2025. Ernst & Young LLP has audited our financial statements since 2014. Representatives of Ernst & Young LLP are expected to be present at the Annual Meeting. They will have an opportunity to make a statement, if they desire to do so, and will be available to respond to appropriate questions.
+
+Independent Registered Public Accounting Firm Fees and Services
+
+The following table presents fees billed for professional audit services and other services rendered to us by Ernst & Young LLP for the years ending December 31, 2024 and 2023, respectively.
+
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+|  | | |  | | |  | | |  | | |  | | |
+|  | | |  | | | Year Ended December 31, | | | | | |  | | |
+|  | | |  | | |  | | |  | | |  | | |
+|  | | |  | | |  | | |  | | |  | | |
+|  | | | Fees | | | 2024 ($) | | | 2023 ($) | | |  | | |
+|  | | |  | | |  | | |  | | |  | | |
+|  | | | Audit Fees(1) | | | 2,615,955 | |  | 2,519,149 | |  |  | | |
+|  | | | Audit-related Fees(2) | | | — | |  | — | |  |  | | |
+|  | | | Tax Fees(3) | | | — | |  | — | |  |  | | |
+|  | | | All Other Fees(4) | | | — | |  | — | |  |  | | |
+|  | | | Total | | | 2,615,955 | |  | 2,519,149 | |  |  | | |
+
+(1)Audit fees include fees and out-of-pocket expenses, whether or not yet invoiced, for professional services provided in connection with the audit of our annual financial statements and review of our quarterly financial statements.
+
+(2)Audit-related fees include fees for consultations on accounting and reporting matters for acquisitions.
+
+(3)Tax fees consist of tax consulting services.
+
+(4)Other fees consist of consultations not related to audit or tax fees and access to an online accounting literature database.
+
+Pre-approval Policies and Procedures
+
+---
+
+[4] doc_id=doc_005658 title=VCYT_2025-04-29_DEF_00_prologue score=0.5573
+VCYT 2025-04-29 DEF 00 prologue
+
+permitted.
+
+We believe that provisions of our Restated Certificate, amended and restated bylaws and indemnification agreements are necessary to attract and retain qualified directors, officers and employees. We also maintain directors’ and officers’ liability insurance.
+
+The limitation of liability and indemnification provisions in our Restated Certificate and amended and restated bylaws or in these indemnification agreements may discourage stockholders from bringing a lawsuit against our directors and officers for breach of their fiduciary duty. They may also reduce the likelihood of derivative litigation against our directors and officers, even though an action, if successful, might benefit us and other stockholders. Further, a stockholder’s investment may be adversely affected to the extent that we pay the costs of settlement and damage awards against directors and officers as required by these indemnification provisions.
+
+Insofar as indemnification for liabilities arising under the Securities Act may be permitted for directors, executive officers or persons controlling us, we have been informed that, in the opinion of the SEC, such indemnification is against public policy as expressed
+
+---
+
+[
 
 Question:
-How did AGILYSYS INC's global employee count and geographic distribution change from March 31, 2020, to March 31, 2021?
+What is the trend in total audit and related fees paid by VERACYTE INC to its auditors for 2022, 2023 (reported in 2024), and 2024 (reported in 2025)? What are the potential main reasons for the increase in audit fees?
 
 Answer:

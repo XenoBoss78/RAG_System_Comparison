@@ -144,17 +144,20 @@ class ChromaBackend(RetrievalBackend):
     ) -> None:
         self.name = name
         self.pool_multiplier = max(1, pool_multiplier)
-        module = importlib.import_module(module_name)
-        embedding_function = module.create_embedding_function(
+        self.module = importlib.import_module(module_name)
+        self.db_dir = Path(db_dir)
+        self.collection_name = collection_name
+        self.seed = seed
+        self.embedding_function = self.module.create_embedding_function(
             backend=embedding_backend,
             model_name=embedding_model,
             device=device,
             seed=seed,
         )
-        self.collection = module.get_chroma_collection(
-            db_dir=db_dir,
+        self.collection = self.module.get_chroma_collection(
+            db_dir=self.db_dir,
             collection_name=collection_name,
-            embedding_function=embedding_function,
+            embedding_function=self.embedding_function,
         )
 
     def _query_chunks(self, query: str, *, n_results: int) -> list[dict[str, Any]]:
@@ -206,13 +209,50 @@ class ChromaBackend(RetrievalBackend):
 
 
 class ChromaMetadataBackend(ChromaBackend):
-    def __init__(self, *, metadata_boost: float, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        metadata_boost: float,
+        auto_metadata_filter: bool,
+        metadata_filter_mode: str,
+        metadata_llm_model: str,
+        metadata_temperature: float,
+        ollama_url: str,
+        strict_metadata_filter: bool,
+        corpus_path: Path,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.metadata_boost = metadata_boost
+        self.auto_metadata_filter = auto_metadata_filter
+        self.metadata_filter_mode = metadata_filter_mode
+        self.metadata_llm_model = metadata_llm_model
+        self.metadata_temperature = metadata_temperature
+        self.ollama_url = ollama_url
+        self.strict_metadata_filter = strict_metadata_filter
+        self.corpus_path = corpus_path
 
     def retrieve(self, query: str, *, n_results: int) -> list[RetrievedDoc]:
         q_tokens = _tokens(query)
-        chunks = self._query_chunks(query, n_results=n_results)
+        count = self.collection.count()
+        if not query.strip() or count <= 0:
+            return []
+        pool = min(max(n_results * self.pool_multiplier, n_results), count)
+        chunks = self.module.retrieve_relevant_chunks(
+            query,
+            db_dir=self.db_dir,
+            collection_name=self.collection_name,
+            n_results=pool,
+            embedding_function=self.embedding_function,
+            auto_metadata_filter=self.auto_metadata_filter,
+            metadata_filter_mode=self.metadata_filter_mode,
+            metadata_llm_model=self.metadata_llm_model,
+            metadata_temperature=self.metadata_temperature,
+            ollama_url=self.ollama_url,
+            strict_metadata_filter=self.strict_metadata_filter,
+            corpus_path=self.corpus_path,
+            seed=self.seed,
+        )
         reranked = []
         for rank, chunk in enumerate(chunks):
             metadata = chunk.get("metadata") or {}
@@ -237,6 +277,9 @@ class ChromaMetadataBackend(ChromaBackend):
                         "chunk_index": metadata.get("chunk_index"),
                         "metadata_overlap": overlap,
                         "vector_score": chunk.get("score"),
+                        "auto_metadata_filter": self.auto_metadata_filter,
+                        "metadata_filter_mode": self.metadata_filter_mode,
+                        "strict_metadata_filter": self.strict_metadata_filter,
                     },
                 )
             )
@@ -374,6 +417,13 @@ def _build_backends(args: argparse.Namespace) -> dict[str, RetrievalBackend]:
                 seed=args.seed,
                 pool_multiplier=args.pool_multiplier,
                 metadata_boost=args.metadata_boost,
+                auto_metadata_filter=not args.no_auto_metadata_filter,
+                metadata_filter_mode=args.metadata_filter_mode,
+                metadata_llm_model=args.metadata_llm_model,
+                metadata_temperature=args.metadata_temperature,
+                ollama_url=args.ollama_url,
+                strict_metadata_filter=args.strict_metadata_filter,
+                corpus_path=args.corpus,
             )
         elif name == "engram":
             store_dir = args.engram_store_dir or _service_namespace_dir(
@@ -528,6 +578,7 @@ def main() -> None:
     parser.add_argument("--chroma-db-dir", type=Path, default=DEFAULT_CHROMA_DB_DIR)
     parser.add_argument("--chroma-metadata-db-dir", type=Path, default=DEFAULT_CHROMA_METADATA_DB_DIR)
     parser.add_argument("--chroma-collection", default=DEFAULT_CHROMA_COLLECTION)
+    parser.add_argument("--corpus", type=Path, default=FIN_RATE_DIR / "corpus" / "corpus" / "corpus.jsonl")
     parser.add_argument("--embedding-backend", default="default")
     parser.add_argument("--embedding-model", default="all-MiniLM-L6-v2")
     parser.add_argument("--device", default="cpu")
@@ -535,7 +586,34 @@ def main() -> None:
         "--metadata-boost",
         type=float,
         default=0.05,
-        help="Score boost per query token found in Chroma title metadata.",
+        help="Post-filter score boost per query token found in Chroma title metadata.",
+    )
+    parser.add_argument(
+        "--no-auto-metadata-filter",
+        action="store_true",
+        help="Disable ChromaSetupMetaData's company/year candidate filter during benchmarking.",
+    )
+    parser.add_argument(
+        "--metadata-filter-mode",
+        choices=("heuristic", "ollama", "none"),
+        default="heuristic",
+        help="How the metadata backend extracts company/year filters before vector retrieval.",
+    )
+    parser.add_argument(
+        "--metadata-llm-model",
+        default="qwen3:4b",
+        help="Ollama model used only when --metadata-filter-mode ollama is selected.",
+    )
+    parser.add_argument(
+        "--metadata-temperature",
+        type=float,
+        default=0.0,
+        help="Sampling temperature for --metadata-filter-mode ollama.",
+    )
+    parser.add_argument(
+        "--strict-metadata-filter",
+        action="store_true",
+        help="Do not fall back to unfiltered Chroma retrieval when a company/year filter finds no chunks.",
     )
 
     parser.add_argument("--engram-data-dir", type=Path, default=DEFAULT_ENGRAM_DATA_DIR)
@@ -630,6 +708,12 @@ def main() -> None:
             "embedding_model": args.embedding_model,
             "device": args.device,
             "metadata_boost": args.metadata_boost,
+            "auto_metadata_filter": not args.no_auto_metadata_filter,
+            "metadata_filter_mode": args.metadata_filter_mode,
+            "metadata_llm_model": args.metadata_llm_model,
+            "metadata_temperature": args.metadata_temperature,
+            "strict_metadata_filter": args.strict_metadata_filter,
+            "corpus_path": str(args.corpus),
             "engram_mode": args.engram_mode,
         },
         "summary": summary,
