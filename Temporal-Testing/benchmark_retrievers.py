@@ -31,6 +31,12 @@ DEFAULT_CHROMA_METADATA_DB_DIR = FIN_RATE_DIR / "chroma_db"
 DEFAULT_CHROMA_COLLECTION = "fin_rate"
 DEFAULT_ENGRAM_DATA_DIR = FIN_RATE_DIR / "engram_data"
 DEFAULT_ENGRAM_NAMESPACE = "fin-rate"
+DEFAULT_ENGRAM_BASE_STORE_DIR = FIN_RATE_DIR / "engram_data_regular_ltqa_subset"
+DEFAULT_ENGRAM_BASE_NAMESPACE = "fin-rate-regular-ltqa-subset"
+DEFAULT_ENGRAM_TEMPORAL_STORE_DIR = (
+    FIN_RATE_DIR / "engram_data_ltqa_subset" / "fin-rate-ltqa-subset--9caea23b52b2bd9b"
+)
+DEFAULT_ENGRAM_TEMPORAL_NAMESPACE = "fin-rate-ltqa-subset"
 DEFAULT_TOP_KS = (5, 10, 15)
 
 DOC_ID_RE = re.compile(r"\bdoc_\d{6}\b")
@@ -290,6 +296,8 @@ class EngramBackend(RetrievalBackend):
     def __init__(
         self,
         *,
+        name: str,
+        module_name: str,
         store_dir: Path,
         namespace: str,
         mode: str,
@@ -297,17 +305,17 @@ class EngramBackend(RetrievalBackend):
         ollama_embed_model: str | None = None,
         ollama_url: str = "http://127.0.0.1:11434",
     ) -> None:
-        self.name = "engram"
+        self.name = name
         self.namespace = namespace
         self.mode = mode
         self.seed = seed
         sys.path.insert(0, str(ROOT_DIR))
         sys.path.insert(0, str(ENGRAM_DIR))
-        fin_rate_local = importlib.import_module("fin_rate_local")
+        self.module = importlib.import_module(module_name)
         embedder = None
         if ollama_embed_model:
-            embedder = fin_rate_local.OllamaEmbedder(ollama_embed_model, base_url=ollama_url)
-        self.mem = fin_rate_local.open_memory(store_dir, embedder=embedder)
+            embedder = self.module.OllamaEmbedder(ollama_embed_model, base_url=ollama_url)
+        self.mem = self.module.open_memory(store_dir, embedder=embedder)
 
     def _doc_from_episode(self, ep_id: str) -> str:
         ep = self.mem.episodes_doc.get(ep_id)
@@ -381,6 +389,75 @@ class EngramBackend(RetrievalBackend):
         return _dedupe_docs(out)[:n_results]
 
 
+class TemporalEngramBackend(RetrievalBackend):
+    """Benchmark the temporal query workflow, including metadata filtering and filing summaries."""
+
+    def __init__(
+        self,
+        *,
+        store_dir: Path,
+        namespace: str,
+        seed: int,
+        ollama_embed_model: str | None,
+        ollama_url: str,
+        llm_query_filters: bool,
+        filing_summary_top_k: int,
+        evidence_per_filing_summary: int,
+    ) -> None:
+        self.name = "engram_temporal"
+        self.store_dir = store_dir
+        self.namespace = namespace
+        self.seed = seed
+        self.llm_query_filters = llm_query_filters
+        self.filing_summary_top_k = filing_summary_top_k
+        self.evidence_per_filing_summary = evidence_per_filing_summary
+        sys.path.insert(0, str(ROOT_DIR))
+        sys.path.insert(0, str(ENGRAM_DIR))
+        self.module = importlib.import_module("Engram_Temporal")
+        self.embedder = (
+            self.module.OllamaEmbedder(ollama_embed_model, base_url=ollama_url)
+            if ollama_embed_model
+            else None
+        )
+
+    def retrieve(self, query: str, *, n_results: int) -> list[RetrievedDoc]:
+        seed_everything(self.seed)
+        result = self.module.query_store(
+            store_dir=self.store_dir,
+            namespace=self.namespace,
+            query=query,
+            top_k=max(n_results, 1),
+            context_chars=0,
+            answer_context_chars=0,
+            include_profile_context=False,
+            llm_query_filters=self.llm_query_filters,
+            use_filing_summaries=True,
+            filing_summary_top_k=self.filing_summary_top_k,
+            evidence_per_filing_summary=self.evidence_per_filing_summary,
+            llm=None,
+            embedder=self.embedder,
+            seed=self.seed,
+        )
+        filters = result.get("filters") or {}
+        return _dedupe_docs(
+            RetrievedDoc(
+                doc_id=str(item.get("doc_id") or ""),
+                score=_safe_float(item.get("score")),
+                source="engram_temporal",
+                detail={
+                    "episode_id": item.get("episode_id"),
+                    "ticker": item.get("ticker"),
+                    "filing_date": item.get("filing_date"),
+                    "query_scope": result.get("query_scope"),
+                    "retrieval_method": result.get("retrieval_method"),
+                    "filters": filters,
+                },
+            )
+            for item in result.get("retrieved_documents") or []
+            if isinstance(item, dict)
+        )[:n_results]
+
+
 def _service_namespace_dir(data_dir: Path, namespace: str) -> Path:
     import hashlib
 
@@ -425,22 +502,36 @@ def _build_backends(args: argparse.Namespace) -> dict[str, RetrievalBackend]:
                 strict_metadata_filter=args.strict_metadata_filter,
                 corpus_path=args.corpus,
             )
-        elif name == "engram":
-            store_dir = args.engram_store_dir or _service_namespace_dir(
+        elif name in {"engram", "engram_base"}:
+            store_dir = args.engram_base_store_dir or args.engram_store_dir or _service_namespace_dir(
                 args.engram_data_dir,
                 args.engram_namespace,
             )
             backends[name] = EngramBackend(
+                name=name,
+                module_name="Engram_Base",
                 store_dir=store_dir,
-                namespace=args.engram_namespace,
+                namespace=args.engram_base_namespace,
                 mode=args.engram_mode,
                 seed=args.seed,
                 ollama_embed_model=args.engram_ollama_embed_model,
                 ollama_url=args.ollama_url,
             )
+        elif name == "engram_temporal":
+            backends[name] = TemporalEngramBackend(
+                store_dir=args.engram_temporal_store_dir,
+                namespace=args.engram_temporal_namespace,
+                seed=args.seed,
+                ollama_embed_model=args.engram_ollama_embed_model,
+                ollama_url=args.ollama_url,
+                llm_query_filters=False,
+                filing_summary_top_k=args.temporal_filing_summary_top_k,
+                evidence_per_filing_summary=args.temporal_evidence_per_filing_summary,
+            )
         else:
             raise ValueError(
-                f"Unknown system {name!r}. Use chroma, chroma_metadata, and/or engram."
+                "Unknown system "
+                f"{name!r}. Use chroma, chroma_metadata, engram_base, and/or engram_temporal."
             )
     return backends
 
@@ -559,8 +650,11 @@ def main() -> None:
     )
     parser.add_argument(
         "--systems",
-        default="chroma,chroma_metadata,engram",
-        help="Comma-separated systems: chroma,chroma_metadata,engram.",
+        default="chroma,chroma_metadata,engram_base,engram_temporal",
+        help=(
+            "Comma-separated systems: chroma, chroma_metadata, engram_base, "
+            "and engram_temporal. The legacy name engram aliases engram_base."
+        ),
     )
     parser.add_argument("--qa-file", type=Path, default=DEFAULT_QA_PATH)
     parser.add_argument("--limit", type=int, help="Number of QA examples to evaluate.")
@@ -620,11 +714,45 @@ def main() -> None:
     parser.add_argument("--engram-store-dir", type=Path)
     parser.add_argument("--engram-namespace", default=DEFAULT_ENGRAM_NAMESPACE)
     parser.add_argument(
+        "--engram-base-store-dir",
+        type=Path,
+        default=DEFAULT_ENGRAM_BASE_STORE_DIR,
+        help="Exact regular Engram Base store directory.",
+    )
+    parser.add_argument(
+        "--engram-base-namespace",
+        default=DEFAULT_ENGRAM_BASE_NAMESPACE,
+        help="Namespace used by the regular Engram Base subset store.",
+    )
+    parser.add_argument(
+        "--engram-temporal-store-dir",
+        type=Path,
+        default=DEFAULT_ENGRAM_TEMPORAL_STORE_DIR,
+        help="Exact temporal Engram store directory.",
+    )
+    parser.add_argument(
+        "--engram-temporal-namespace",
+        default=DEFAULT_ENGRAM_TEMPORAL_NAMESPACE,
+        help="Namespace used by the temporal Engram subset store.",
+    )
+    parser.add_argument(
         "--engram-mode",
         choices=("facts", "episodes", "summaries", "combined"),
         default="combined",
     )
     parser.add_argument("--engram-ollama-embed-model")
+    parser.add_argument(
+        "--temporal-filing-summary-top-k",
+        type=int,
+        default=4,
+        help="Temporal filing summaries considered for broad queries.",
+    )
+    parser.add_argument(
+        "--temporal-evidence-per-filing-summary",
+        type=int,
+        default=2,
+        help="Temporal raw-evidence chunks expanded from each filing summary.",
+    )
     parser.add_argument("--ollama-url", default="http://127.0.0.1:11434")
     args = parser.parse_args()
 
@@ -634,6 +762,10 @@ def main() -> None:
         raise ValueError("--runs must be positive")
     if args.warmup < 0:
         raise ValueError("--warmup must be non-negative")
+    if args.temporal_filing_summary_top_k <= 0:
+        raise ValueError("--temporal-filing-summary-top-k must be positive")
+    if args.temporal_evidence_per_filing_summary <= 0:
+        raise ValueError("--temporal-evidence-per-filing-summary must be positive")
     seed_everything(args.seed)
     top_ks = tuple(sorted({int(k.strip()) for k in args.top_ks.split(",") if k.strip()}))
     if not top_ks or any(k <= 0 for k in top_ks):
@@ -715,6 +847,12 @@ def main() -> None:
             "strict_metadata_filter": args.strict_metadata_filter,
             "corpus_path": str(args.corpus),
             "engram_mode": args.engram_mode,
+            "engram_base_store_dir": str(args.engram_base_store_dir),
+            "engram_base_namespace": args.engram_base_namespace,
+            "engram_temporal_store_dir": str(args.engram_temporal_store_dir),
+            "engram_temporal_namespace": args.engram_temporal_namespace,
+            "temporal_filing_summary_top_k": args.temporal_filing_summary_top_k,
+            "temporal_evidence_per_filing_summary": args.temporal_evidence_per_filing_summary,
         },
         "summary": summary,
     }

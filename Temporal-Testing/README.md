@@ -84,6 +84,13 @@ line records total build time, batch-only work (relationships, fact extraction,
 summary indexing, and saving), and the average duration of every document step.
 Use `--ingestion-timings-file <path>` to put this analysis file elsewhere.
 
+The store is checkpointed after raw chunk/graph ingestion and again after
+summary indexing. If a late stage fails, rerun the same build **without**
+`--reset`: existing document IDs are skipped, incomplete chunk summaries are
+finished, and filing-level summaries are then created. The timing JSONL records
+each successful checkpoint as `record_type: "checkpoint"`; use `--reset` only
+when deliberately starting the target store over.
+
 ### Build an LT-QA document subset
 
 The LT-QA selection cell in `TemporalMemoryRetrieval.ipynb` saves two files for
