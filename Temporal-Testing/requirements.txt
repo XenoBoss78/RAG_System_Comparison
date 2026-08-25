@@ -1,13 +1,38 @@
-# Tested with Python 3.12. Pinning direct dependencies keeps experiments repeatable.
---extra-index-url https://download.pytorch.org/whl/cu130
+# Python dependencies for the Temporal-Testing experiments.
+#
+# Tested with Python 3.12. Install from this directory so the relative Engram
+# path resolves correctly:
+#
+#     python -m pip install -r requirements.txt
+#
+# The default experiments use Ollama for LLM and embedding calls. Ollama is a
+# separate local application, not a Python package. Install/start Ollama and
+# pull the models used by the command or notebook (for example qwen3:4b-instruct
+# and embeddinggemma:latest) before building a store or running a benchmark.
 
-numpy==2.5.1
-chromadb==1.5.9
-openai==2.46.0
-sentence-transformers==5.6.0
-torch==2.13.0+cu130
-ipykernel==7.3.0
+# Chroma stores and the NumPy-based standalone/CRAG retrieval helpers.
+chromadb>=1.0,<2.0
+numpy>=2.0,<3.0
 
-# fin_rate_local.py imports the sibling Engram clone at commit
-# ed0e53a8b1626158282afe3d0ec252d52fe17749.
+# Required to use the local BGE / sentence-transformer embedding backend.
+# The normal Ollama embedding backend does not load these at runtime, but they
+# are included so every supplied Chroma configuration works after one install.
+sentence-transformers>=3.0,<6.0
+torch>=2.4,<3.0
+
+# Required only by openai_embeddings_retriever.py. It is included so that
+# script works when OPENAI_API_KEY is configured.
+openai>=1.0,<3.0
+
+# Notebook support used by TemporalMemoryRetrieval.ipynb.
+ipykernel>=6.29,<8.0
+jupyterlab>=4.0,<5.0
+
+# The Temporal Engram scripts import the sibling Engram checkout. Keep the
+# repository layout as <workspace>/Temporal-Testing and <workspace>/engram.
 -e ../engram
+
+# GPU note: the torch line above lets pip choose a platform-compatible wheel.
+# For a CUDA-specific build, install the appropriate PyTorch wheel for the
+# machine first, then install this file normally; pip will retain that wheel
+# when its version satisfies the constraint above.
