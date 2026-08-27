@@ -26,6 +26,10 @@ Inception/
 └── Temporal-Testing/
 ```
 
+The Fin-RATE corpus is supplied by Hugging Face as `Fin-RATE/corpus/corpus.zip`.
+Before building any store, unzip it into `Fin-RATE/corpus/corpus/` so that
+`Fin-RATE/corpus/corpus/corpus.jsonl` exists.
+
 Use Python 3.12. A virtual environment is recommended but not required:
 
 ```powershell
@@ -39,8 +43,28 @@ python -m pip install -r requirements.txt
 `requirements.txt` installs the sibling `../engram` checkout in editable mode,
 so keep `engram` beside `Temporal-Testing`.
 
-The default configuration uses Ollama. Install/start Ollama, then pull the
-models needed by the workflows you will run:
+### Ollama setup
+
+The default workflows use a local Ollama server for embeddings and optional LLM
+tasks. The scripts call its HTTP API directly, so installing the Ollama desktop
+application is required; no separate Python Ollama package is needed. On
+Windows, install Ollama from [the official download page](https://ollama.com/download),
+then open a new PowerShell window and confirm the command is available:
+
+```powershell
+ollama --version
+ollama list
+```
+
+Ollama normally starts in the background and serves its API at
+`http://127.0.0.1:11434`. If `ollama list` cannot connect, start the Ollama
+application or run the following command in a separate terminal:
+
+```powershell
+ollama serve
+```
+
+Pull the models needed by the workflows you will run:
 
 ```powershell
 ollama pull embeddinggemma:latest
@@ -55,8 +79,17 @@ ollama list
   resolution, and graph planning.
 - `qwen3:4b-instruct` is recommended for grounded answer-generation tests.
 
-Ollama normally listens at `http://127.0.0.1:11434`. If `ollama list` cannot
-connect, start the Ollama application or run `ollama serve` in another terminal.
+`embeddinggemma:latest` must remain the same when building and reopening a
+Chroma or Engram store. Rebuilding a store is required if the embedding model
+changes, because embedding dimensions and vector spaces can differ between
+models. The Qwen models can be changed for optional LLM tasks without changing
+an existing embedding index.
+
+Ollama keeps downloaded models outside this repository. Make sure the machine
+has enough disk space for them. On Windows, set the user environment variable
+`OLLAMA_MODELS` before restarting Ollama if the default model location does not
+have sufficient space. See the [official Windows documentation](https://docs.ollama.com/windows)
+for model-location and hardware details.
 
 All scripts default to `--seed 42`. Change the seed only when deliberately
 creating a different question/document sample. LLM text can still vary across
@@ -74,10 +107,10 @@ separate ingestion build.
 | `chroma_metadata_multilayer` | Metadata Chroma | Multilayer temporal filtering. |
 | `chroma_metadata_verified` | Metadata Chroma | Company/year coverage selection, targeted recovery, then LLM evidence audit. |
 | `chroma_metadata_yearly` | Metadata Chroma | Retrieves candidates per requested year and protects year coverage. |
-| `chroma_metadata_nsq` | Metadata Chroma | Retrieves the parent and saved subqueries, then merges branches with RRF. |
+| `chroma_metadata_nsq` | Metadata Chroma | Retrieves the parent and saved subqueries; final selection is configurable as RRF, original-question reranking, or coverage slots. |
 | `engram_base` | Engram Base | Regular Engram retrieval (`engram` is an alias). |
 | `engram_temporal` | Temporal Engram | Company/time filtering and raw evidence; broad questions can navigate through filing summaries. |
-| `engram_temporal_nsq` | Temporal Engram | Temporal retrieval per subquery, then reciprocal-rank fusion. |
+| `engram_temporal_nsq` | Temporal Engram | Temporal retrieval per subquery with the same configurable NSQ final-selection strategies. |
 | `engram_temporal_graph` | Temporal Engram | Metadata-filtered vector retrieval guided by graph connections. |
 
 Consequently, a complete build creates only four physical stores: `chroma`,
@@ -182,6 +215,13 @@ the remaining summary stages can finish.
 document-level retrieval metrics: `recall@k`, `hit@k`, `precision@k`, `MRR`, and
 latency. They do not directly measure answer quality.
 
+The benchmark prints progress and checkpoints its completed rows every 25
+questions by default. Each checkpoint rewrites the corresponding
+`*_details.jsonl` and creates a `*_checkpoint.json` containing elapsed time and
+an ETA. It is safe to stop after that message if partial results are useful;
+benchmark runs do not yet resume automatically. Adjust the cadence with
+`--progress-every <N>` or use `0` to disable periodic checkpoints.
+
 For the example subset, set these PowerShell variables once:
 
 ```powershell
@@ -233,7 +273,8 @@ no matches; `--strict-metadata-filter` disables that recovery.
 NSQ requires a QA file containing precomputed subqueries for the same question
 IDs and golden `doc_ids`. Use the NSQ question file rather than the original
 question file. The original question stays as an anchor branch, while every
-subquery contributes candidates to reciprocal-rank fusion.
+subquery contributes candidates. By default, the candidates are merged with
+reciprocal-rank fusion (RRF), preserving the original benchmark behavior.
 
 ```powershell
 python .\benchmark_retrievers.py `
@@ -260,6 +301,37 @@ python .\benchmark_retrievers.py `
 Evaluate NSQ separately from an original-question run. Its rewritten query text
 can raise document recall without improving downstream answer quality, so use
 the same question file, seed, and gold document IDs for any direct comparison.
+
+Two alternative final-selection strategies use the unchanged Chroma and
+Temporal Engram stores:
+
+- `--nsq-fusion-strategy query-rerank` re-scores the union of branch candidates
+  against only the original question and selects the highest-scoring evidence
+  chunk for each document.
+- `--nsq-fusion-strategy coverage-slots` first reserves a document slot for
+  every explicit year and each automatically detected financial metric, then
+  fills remaining slots by original-question relevance. Add uncommon required
+  phrases with `--nsq-coverage-metrics "metric one,metric two"`.
+
+For example, benchmark the coverage strategy without rebuilding either store:
+
+```powershell
+python .\benchmark_retrievers.py `
+  --systems chroma_metadata_nsq,engram_temporal_nsq `
+  --qa-file .\ltqa_subset_questions_nsq.json `
+  --chroma-metadata-db-dir "$storeRoot\chroma_metadata" `
+  --chroma-collection $collection `
+  --engram-temporal-store-dir "$storeRoot\engram_temporal" `
+  --engram-temporal-namespace $temporalNamespace `
+  --embedding-backend ollama `
+  --embedding-model embeddinggemma:latest `
+  --metadata-filter-mode heuristic `
+  --nsq-fusion-strategy coverage-slots `
+  --nsq-coverage-metrics "renewable diesel,capital allocation" `
+  --n-results 15 `
+  --top-ks 5,10,15 `
+  --output-prefix ltqa_q100_nsq_coverage
+```
 
 ### Generate answers from saved benchmark details
 
@@ -515,6 +587,13 @@ Both builders report requested, matched, and missing IDs in their
 `build_stats.json` file. Chroma ingestion does not generate LLM summaries; it
 only chunks and embeds the selected raw documents. The LLM is optional later,
 when generating an answer or enriching a query filter.
+
+Chroma prints and flushes a durable batch every 25 documents by default. Pass
+`--progress-every <N>` to either Chroma builder (or
+`--chroma-progress-every <N>` to `build_ltqa_subset_databases.py`) to adjust
+that cadence; use `0` to silence it. A printed Chroma checkpoint means the
+partial collection is safely persisted, but Chroma builds do not resume from
+that point—restart with a reset collection when a complete build is needed.
 
 Evaluate the same selected questions against both subset databases with:
 

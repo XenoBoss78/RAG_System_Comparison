@@ -260,9 +260,10 @@ def load_document_ids_file(path: Path) -> set[str]:
     return normalized
 
 
-def _flush_batch(collection: Any, batch: dict[str, list[Any]]) -> None:
+def _flush_batch(collection: Any, batch: dict[str, list[Any]]) -> int:
     if not batch["ids"]:
-        return
+        return 0
+    count = len(batch["ids"])
     collection.add(
         ids=batch["ids"],
         documents=batch["documents"],
@@ -271,6 +272,7 @@ def _flush_batch(collection: Any, batch: dict[str, list[Any]]) -> None:
     batch["ids"].clear()
     batch["documents"].clear()
     batch["metadatas"].clear()
+    return count
 
 
 def get_chroma_collection(
@@ -305,6 +307,7 @@ def build_chroma_database(
     embedding_function: Any | None = None,
     document_ids: list[str] | set[str] | tuple[str, ...] | str | None = None,
     reset_collection: bool = True,
+    progress_every: int = 25,
     seed: int = DEFAULT_SEED,
 ) -> dict[str, Any]:
     """
@@ -326,6 +329,8 @@ def build_chroma_database(
         raise FileNotFoundError(f"Corpus file not found: {corpus_path}")
     if batch_size <= 0:
         raise ValueError("batch_size must be positive")
+    if progress_every < 0:
+        raise ValueError("progress_every must be non-negative")
     if chunk_overlap_tokens >= chunk_size_tokens:
         raise ValueError("chunk_overlap_tokens must be smaller than chunk_size_tokens")
 
@@ -347,8 +352,21 @@ def build_chroma_database(
     records_read = 0
     documents_seen = 0
     chunks_indexed = 0
+    chunks_persisted = 0
+    progress_checkpoints_saved = 0
     tokens_processed = 0
     batch: dict[str, list[Any]] = {"ids": [], "documents": [], "metadatas": []}
+
+    target_description = (
+        f"{len(target_document_ids)} selected documents"
+        if target_document_ids is not None
+        else "the full corpus"
+    )
+    print(
+        f"[Chroma build] starting {target_description}; "
+        f"progress checkpoint every {progress_every or 'disabled'} documents",
+        flush=True,
+    )
 
     with corpus_path.open("r", encoding="utf-8") as corpus_file:
         for line_number, line in enumerate(corpus_file, start=1):
@@ -394,7 +412,19 @@ def build_chroma_database(
                 chunks_indexed += 1
 
                 if len(batch["ids"]) >= batch_size:
-                    _flush_batch(collection, batch)
+                    chunks_persisted += _flush_batch(collection, batch)
+
+            if progress_every and documents_seen % progress_every == 0:
+                chunks_persisted += _flush_batch(collection, batch)
+                progress_checkpoints_saved += 1
+                total = f"/{len(target_document_ids)}" if target_document_ids is not None else ""
+                print(
+                    "[Chroma build] checkpoint saved: "
+                    f"{documents_seen}{total} documents, {chunks_persisted} persisted chunks "
+                    f"({chunks_indexed} prepared). A partial collection is durable; "
+                    "rerun with reset to rebuild a complete collection after stopping.",
+                    flush=True,
+                )
 
             if (
                 target_document_ids is not None
@@ -402,7 +432,7 @@ def build_chroma_database(
             ):
                 break
 
-    _flush_batch(collection, batch)
+    chunks_persisted += _flush_batch(collection, batch)
 
     stats = {
         "corpus_path": str(corpus_path),
@@ -418,6 +448,8 @@ def build_chroma_database(
             else []
         ),
         "chunks_indexed": chunks_indexed,
+        "chunks_persisted": chunks_persisted,
+        "progress_checkpoints_saved": progress_checkpoints_saved,
         "collection_count": collection.count(),
         "chunk_size_tokens": chunk_size_tokens,
         "chunk_overlap_tokens": chunk_overlap_tokens,
@@ -429,6 +461,11 @@ def build_chroma_database(
     }
     (db_dir / "build_stats.json").write_text(
         json.dumps(stats, indent=2), encoding="utf-8"
+    )
+    print(
+        "[Chroma build] completed and saved final build statistics: "
+        f"{documents_seen} documents, {chunks_persisted} chunks.",
+        flush=True,
     )
     return stats
 
@@ -719,6 +756,15 @@ def _main() -> None:
         help="Number of texts to send to Ollama per embedding request.",
     )
     parser.add_argument(
+        "--progress-every",
+        type=int,
+        default=25,
+        help=(
+            "Save a durable Chroma batch and print build progress after this many documents; "
+            "use 0 to disable progress checkpoints."
+        ),
+    )
+    parser.add_argument(
         "--device",
         default="cpu",
         help="Embedding device, e.g. cpu or cuda, for sentence-transformers.",
@@ -745,6 +791,8 @@ def _main() -> None:
     parser.add_argument("--no-reset", action="store_true", help="Do not delete an existing collection.")
     args = parser.parse_args()
     seed_everything(args.seed)
+    if args.progress_every < 0:
+        raise ValueError("--progress-every must be non-negative")
 
     embedding_function = create_embedding_function(
         backend=args.embedding_backend,
@@ -769,6 +817,7 @@ def _main() -> None:
             document_ids=document_ids,
             batch_size=args.batch_size,
             reset_collection=not args.no_reset,
+            progress_every=args.progress_every,
             seed=args.seed,
         )
         print(json.dumps(stats, indent=2))

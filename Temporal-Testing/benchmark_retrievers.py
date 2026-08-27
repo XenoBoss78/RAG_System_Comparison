@@ -11,7 +11,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 
 try:
     from .reproducibility import DEFAULT_SEED, seed_everything
@@ -44,6 +44,47 @@ TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_$%./'&-]*")
 LEGAL_COMPANY_NAME_RE = re.compile(
     r"\b(?:[A-Z][A-Za-z0-9&'’.-]*\s+){1,7}"
     r"(?:Inc(?:orporated)?|Corp(?:oration)?|Company|Co|Ltd|Limited|LLC|L\.L\.C\.|PLC)\.?\b"
+)
+YEAR_TOKEN_RE = re.compile(r"\b(?:19|20)\d{2}\b")
+
+# These labels are deliberately conservative: they cover recurring LT-QA
+# numeric/financial asks without trying to infer a requirement from an
+# arbitrary company or product name.  Users can append literal phrases with
+# --nsq-coverage-metrics when a question has an important non-standard metric.
+NSQ_METRIC_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
+    ("revenue / sales", re.compile(r"\b(?:revenue|sales|net sales)\b", re.IGNORECASE)),
+    ("net income / loss", re.compile(r"\bnet (?:income|loss)\b", re.IGNORECASE)),
+    ("gross profit / margin", re.compile(r"\bgross (?:profit|margin)\b", re.IGNORECASE)),
+    (
+        "operating income / margin",
+        re.compile(r"\boperating (?:income|loss|margin)\b", re.IGNORECASE),
+    ),
+    ("EBITDA / EBIT", re.compile(r"\b(?:adjusted )?ebitda?\b", re.IGNORECASE)),
+    ("cash flow", re.compile(r"\b(?:free |operating )?cash flow\b", re.IGNORECASE)),
+    (
+        "earnings per share",
+        re.compile(r"\b(?:earnings per share|eps)\b", re.IGNORECASE),
+    ),
+    (
+        "assets / liabilities / equity",
+        re.compile(r"\b(?:assets?|liabilities|shareholders?'? equity)\b", re.IGNORECASE),
+    ),
+    ("debt / liquidity", re.compile(r"\b(?:debt|liquidity|borrowings?)\b", re.IGNORECASE)),
+    (
+        "capital expenditure",
+        re.compile(r"\b(?:capital expenditur\w*|capex)\b", re.IGNORECASE),
+    ),
+    (
+        "compensation / bonus",
+        re.compile(r"\b(?:compensation|bonus|salary|stock awards?)\b", re.IGNORECASE),
+    ),
+    ("audit fees", re.compile(r"\baudit(?:ing)? fees?\b", re.IGNORECASE)),
+    (
+        "ownership / shareholding",
+        re.compile(r"\b(?:ownership|shareholdings?|voting power)\b", re.IGNORECASE),
+    ),
+    ("headcount", re.compile(r"\b(?:headcount|employees?)\b", re.IGNORECASE)),
+    ("returns", re.compile(r"\b(?:returns?|roi|roic|irr)\b", re.IGNORECASE)),
 )
 
 
@@ -235,6 +276,385 @@ def _normalise_nsq_branches(query: str, subqueries: Iterable[str] | None) -> lis
     return branches
 
 
+def _nsq_evidence_id(doc: RetrievedDoc) -> str:
+    """Return the stored chunk/episode identifier behind an NSQ candidate."""
+    detail = doc.detail if isinstance(doc.detail, dict) else {}
+    for key in ("chunk_id", "episode_id"):
+        value = str(detail.get(key) or "").strip()
+        if value:
+            return value
+    return doc.doc_id
+
+
+def _cosine_similarity(left: Any, right: Any) -> float | None:
+    """Compute cosine similarity without imposing a NumPy dependency on the benchmark."""
+    if hasattr(left, "tolist"):
+        left = left.tolist()
+    if hasattr(right, "tolist"):
+        right = right.tolist()
+    if not isinstance(left, (list, tuple)) or not isinstance(right, (list, tuple)):
+        return None
+    if not left or len(left) != len(right):
+        return None
+    try:
+        dot = sum(float(a) * float(b) for a, b in zip(left, right))
+        left_norm = math.sqrt(sum(float(a) ** 2 for a in left))
+        right_norm = math.sqrt(sum(float(b) ** 2 for b in right))
+    except (TypeError, ValueError):
+        return None
+    if left_norm <= 0 or right_norm <= 0:
+        return None
+    return dot / (left_norm * right_norm)
+
+
+def _nsq_candidate_entries(
+    branches: Iterable[tuple[str, list[RetrievedDoc]]],
+    *,
+    parent_scores: dict[str, float] | None = None,
+    evidence_texts: dict[str, str] | None = None,
+) -> tuple[list[dict[str, Any]], dict[str, list[dict[str, Any]]]]:
+    """Keep NSQ candidate provenance while assigning each candidate a parent-query score.
+
+    Parent-query scores are supplied by the backend as an exact vector comparison
+    between the original question and the stored candidate evidence.  If an
+    embedding cannot be recovered, the original-query branch score is retained as
+    a deterministic fallback; a synthetic branch score is never treated as a
+    parent-query score.
+    """
+    scores = parent_scores or {}
+    texts = evidence_texts or {}
+    entries: list[dict[str, Any]] = []
+    entries_by_doc: dict[str, list[dict[str, Any]]] = {}
+    for branch_index, (branch, branch_docs) in enumerate(branches):
+        for rank, doc in enumerate(branch_docs, start=1):
+            if not doc.doc_id:
+                continue
+            evidence_id = _nsq_evidence_id(doc)
+            parent_score = _safe_float(scores.get(evidence_id))
+            score_source = "original_query_vector"
+            if parent_score is None and branch_index == 0:
+                parent_score = _safe_float(doc.score)
+                score_source = "original_query_branch_fallback"
+            elif parent_score is None:
+                score_source = "unavailable"
+            detail = doc.detail if isinstance(doc.detail, dict) else {}
+            fallback_text = str(detail.get("title") or "")
+            entry = {
+                "doc": doc,
+                "doc_id": doc.doc_id,
+                "evidence_id": evidence_id,
+                "branch": branch,
+                "branch_index": branch_index,
+                "rank": rank,
+                "parent_score": parent_score,
+                "score_source": score_source,
+                "text": str(texts.get(evidence_id) or fallback_text),
+            }
+            entries.append(entry)
+            entries_by_doc.setdefault(doc.doc_id, []).append(entry)
+    return entries, entries_by_doc
+
+
+def _entry_sort_key(entry: dict[str, Any]) -> tuple[float, float, int, int, str]:
+    """Sort NSQ evidence by original-question relevance with stable fallbacks."""
+    score = _safe_float(entry.get("parent_score"))
+    return (
+        1.0 if score is not None else 0.0,
+        score if score is not None else float("-inf"),
+        1 if int(entry["branch_index"]) == 0 else 0,
+        -int(entry["rank"]),
+        str(entry["evidence_id"]),
+    )
+
+
+def _best_nsq_entry_per_document(
+    entries_by_doc: dict[str, list[dict[str, Any]]],
+) -> list[dict[str, Any]]:
+    """Choose the best parent-query evidence chunk for every candidate document."""
+    best = [max(entries, key=_entry_sort_key) for entries in entries_by_doc.values() if entries]
+    return sorted(best, key=_entry_sort_key, reverse=True)
+
+
+def _nsq_branch_provenance(entries: Iterable[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    provenance: dict[str, list[dict[str, Any]]] = {}
+    for entry in entries:
+        provenance.setdefault(str(entry["doc_id"]), []).append(
+            {
+                "branch_index": entry["branch_index"],
+                "rank": entry["rank"],
+                "evidence_id": entry["evidence_id"],
+            }
+        )
+    return provenance
+
+
+def _nsq_retrieved_doc(
+    entry: dict[str, Any],
+    *,
+    source: str,
+    fusion_method: str,
+    provenance: dict[str, list[dict[str, Any]]],
+    coverage_slots: Iterable[str] = (),
+) -> RetrievedDoc:
+    """Build a benchmark result while retaining the answer-bearing evidence ID."""
+    representative = entry["doc"]
+    detail = representative.detail if isinstance(representative.detail, dict) else {}
+    parent_score = _safe_float(entry.get("parent_score"))
+    return RetrievedDoc(
+        doc_id=representative.doc_id,
+        score=parent_score,
+        source=source,
+        detail={
+            **detail,
+            "nsq": {
+                "fusion_method": fusion_method,
+                "original_query_score": parent_score,
+                "original_query_score_source": entry["score_source"],
+                "branches": provenance.get(representative.doc_id, []),
+                "coverage_slots": list(coverage_slots),
+            },
+        },
+    )
+
+
+def _rerank_nsq_documents_by_original_query(
+    branches: Iterable[tuple[str, list[RetrievedDoc]]],
+    *,
+    source: str,
+    n_results: int,
+    parent_scores: dict[str, float] | None = None,
+    evidence_texts: dict[str, str] | None = None,
+) -> tuple[list[RetrievedDoc], dict[str, Any]]:
+    """Rerank the union of NSQ candidates strictly by the original question.
+
+    This intentionally does not reward a document for appearing in multiple
+    synthetic branches.  It selects the candidate chunk with the strongest
+    original-question vector similarity for each document, then ranks documents
+    using only that score.
+    """
+    branch_list = list(branches)
+    entries, entries_by_doc = _nsq_candidate_entries(
+        branch_list,
+        parent_scores=parent_scores,
+        evidence_texts=evidence_texts,
+    )
+    provenance = _nsq_branch_provenance(entries)
+    ranked_entries = _best_nsq_entry_per_document(entries_by_doc)
+    docs = [
+        _nsq_retrieved_doc(
+            entry,
+            source=source,
+            fusion_method="original_query_vector_rerank",
+            provenance=provenance,
+        )
+        for entry in ranked_entries[:n_results]
+    ]
+    return docs, {
+        "branches": [
+            {
+                "branch_index": index,
+                "query": branch,
+                "returned_documents": len(branch_docs),
+            }
+            for index, (branch, branch_docs) in enumerate(branch_list)
+        ],
+        "unique_candidate_documents": len(entries_by_doc),
+        "candidate_evidence": len(entries),
+        "rescored_evidence": sum(
+            1 for entry in entries if entry["score_source"] == "original_query_vector"
+        ),
+        "fusion_method": "original_query_vector_rerank",
+    }
+
+
+def _extract_nsq_year_requirements(branches: Iterable[tuple[str, list[RetrievedDoc]]]) -> list[str]:
+    years: set[str] = set()
+    for branch, _ in branches:
+        years.update(YEAR_TOKEN_RE.findall(branch))
+    return sorted(years)
+
+
+def _extract_nsq_metric_requirements(
+    branches: Iterable[tuple[str, list[RetrievedDoc]]],
+    *,
+    extra_metrics: Iterable[str] = (),
+) -> list[tuple[str, re.Pattern[str]]]:
+    """Extract repeatable financial/key-metric requirements from question-only text."""
+    source_text = "\n".join(branch for branch, _ in branches)
+    requirements = [
+        (label, pattern)
+        for label, pattern in NSQ_METRIC_PATTERNS
+        if pattern.search(source_text)
+    ]
+    existing = {label.lower() for label, _ in requirements}
+    for raw_value in extra_metrics:
+        phrase = str(raw_value).strip()
+        if not phrase or phrase.lower() in existing:
+            continue
+        requirements.append((phrase, re.compile(re.escape(phrase), re.IGNORECASE)))
+        existing.add(phrase.lower())
+    return requirements
+
+
+def _coverage_slot_candidates(
+    entries: Iterable[dict[str, Any]],
+    *,
+    matcher: Callable[[str], bool],
+) -> tuple[list[dict[str, Any]], str]:
+    """Prefer evidence text matches; branch-only matches are a visible fallback."""
+    text_matches = [entry for entry in entries if matcher(str(entry.get("text") or ""))]
+    if text_matches:
+        return sorted(text_matches, key=_entry_sort_key, reverse=True), "evidence_text"
+    branch_matches = [entry for entry in entries if matcher(str(entry.get("branch") or ""))]
+    if branch_matches:
+        return sorted(branch_matches, key=_entry_sort_key, reverse=True), "branch_query_fallback"
+    return [], "unavailable"
+
+
+def _select_nsq_documents_with_coverage_slots(
+    branches: Iterable[tuple[str, list[RetrievedDoc]]],
+    *,
+    source: str,
+    n_results: int,
+    parent_scores: dict[str, float] | None = None,
+    evidence_texts: dict[str, str] | None = None,
+    extra_metrics: Iterable[str] = (),
+) -> tuple[list[RetrievedDoc], dict[str, Any]]:
+    """Reserve final-result slots for each requested year and important metric.
+
+    Every slot is selected from the NSQ candidate union by its original-question
+    vector score.  The remainder of the final set is then filled by the same
+    original-question ranking.  This gives broad questions explicit coverage
+    without permitting a synthetic branch's ranking to dominate the final order.
+    """
+    branch_list = list(branches)
+    entries, entries_by_doc = _nsq_candidate_entries(
+        branch_list,
+        parent_scores=parent_scores,
+        evidence_texts=evidence_texts,
+    )
+    provenance = _nsq_branch_provenance(entries)
+    ranked_entries = _best_nsq_entry_per_document(entries_by_doc)
+    slot_requirements: list[tuple[str, Callable[[str], bool]]] = []
+    for year in _extract_nsq_year_requirements(branch_list):
+        slot_requirements.append((f"year:{year}", lambda text, y=year: y in text))
+    for label, pattern in _extract_nsq_metric_requirements(
+        branch_list,
+        extra_metrics=extra_metrics,
+    ):
+        slot_requirements.append((f"metric:{label}", lambda text, p=pattern: bool(p.search(text))))
+
+    selected: list[dict[str, Any]] = []
+    selected_ids: set[str] = set()
+    slots_by_doc: dict[str, list[str]] = {}
+    slot_diagnostics: list[dict[str, Any]] = []
+    for slot_name, matcher in slot_requirements:
+        candidates, match_source = _coverage_slot_candidates(entries, matcher=matcher)
+        if not candidates:
+            slot_diagnostics.append({"slot": slot_name, "status": "unavailable"})
+            continue
+        selected_match = next(
+            (entry for entry in selected if matcher(str(entry.get("text") or ""))),
+            None,
+        )
+        if selected_match is not None:
+            selected_doc_id = str(selected_match["doc_id"])
+            slots_by_doc.setdefault(selected_doc_id, []).append(slot_name)
+            slot_diagnostics.append(
+                {
+                    "slot": slot_name,
+                    "status": "covered_by_selected_evidence",
+                    "doc_id": selected_doc_id,
+                    "match_source": match_source,
+                }
+            )
+            continue
+        candidate = next(
+            (entry for entry in candidates if str(entry["doc_id"]) not in selected_ids),
+            None,
+        )
+        if candidate is None:
+            # The final context keeps one chunk per document. Do not claim a
+            # slot is covered merely because a different chunk from an already
+            # selected document contained the requirement.
+            slot_diagnostics.append(
+                {
+                    "slot": slot_name,
+                    "status": "only_available_in_already_selected_document",
+                    "doc_id": str(candidates[0]["doc_id"]),
+                    "match_source": match_source,
+                }
+            )
+            continue
+        doc_id = str(candidate["doc_id"])
+        if len(selected) >= n_results:
+            slot_diagnostics.append(
+                {
+                    "slot": slot_name,
+                    "status": "no_remaining_result_slot",
+                    "doc_id": doc_id,
+                    "match_source": match_source,
+                }
+            )
+            continue
+        selected.append(candidate)
+        selected_ids.add(doc_id)
+        slots_by_doc.setdefault(doc_id, []).append(slot_name)
+        slot_diagnostics.append(
+            {
+                "slot": slot_name,
+                "status": "selected",
+                "doc_id": doc_id,
+                "match_source": match_source,
+            }
+        )
+
+    for entry in ranked_entries:
+        if len(selected) >= n_results:
+            break
+        doc_id = str(entry["doc_id"])
+        if doc_id in selected_ids:
+            continue
+        selected.append(entry)
+        selected_ids.add(doc_id)
+
+    docs = [
+        _nsq_retrieved_doc(
+            entry,
+            source=source,
+            fusion_method="coverage_slots_then_original_query_rerank",
+            provenance=provenance,
+            coverage_slots=slots_by_doc.get(str(entry["doc_id"]), ()),
+        )
+        for entry in selected
+    ]
+    return docs, {
+        "branches": [
+            {
+                "branch_index": index,
+                "query": branch,
+                "returned_documents": len(branch_docs),
+            }
+            for index, (branch, branch_docs) in enumerate(branch_list)
+        ],
+        "unique_candidate_documents": len(entries_by_doc),
+        "candidate_evidence": len(entries),
+        "rescored_evidence": sum(
+            1 for entry in entries if entry["score_source"] == "original_query_vector"
+        ),
+        "fusion_method": "coverage_slots_then_original_query_rerank",
+        "coverage_slots": slot_diagnostics,
+        "coverage_years": _extract_nsq_year_requirements(branch_list),
+        "coverage_metrics": [
+            label
+            for label, _ in _extract_nsq_metric_requirements(
+                branch_list,
+                extra_metrics=extra_metrics,
+            )
+        ],
+    }
+
+
 def _fuse_nsq_documents(
     branches: Iterable[tuple[str, list[RetrievedDoc]]],
     *,
@@ -309,6 +729,45 @@ def _fuse_nsq_documents(
         "fusion_method": "weighted_reciprocal_rank_fusion",
         "rrf_k": rrf_k,
     }
+
+
+def _select_nsq_fusion_strategy(
+    branches: Iterable[tuple[str, list[RetrievedDoc]]],
+    *,
+    source: str,
+    n_results: int,
+    strategy: str,
+    rrf_k: int,
+    parent_scores: dict[str, float] | None = None,
+    evidence_texts: dict[str, str] | None = None,
+    coverage_metrics: Iterable[str] = (),
+) -> tuple[list[RetrievedDoc], dict[str, Any]]:
+    """Apply one of the explicitly comparable NSQ final-selection strategies."""
+    if strategy == "rrf":
+        return _fuse_nsq_documents(
+            branches,
+            source=source,
+            n_results=n_results,
+            rrf_k=rrf_k,
+        )
+    if strategy == "query-rerank":
+        return _rerank_nsq_documents_by_original_query(
+            branches,
+            source=source,
+            n_results=n_results,
+            parent_scores=parent_scores,
+            evidence_texts=evidence_texts,
+        )
+    if strategy == "coverage-slots":
+        return _select_nsq_documents_with_coverage_slots(
+            branches,
+            source=source,
+            n_results=n_results,
+            parent_scores=parent_scores,
+            evidence_texts=evidence_texts,
+            extra_metrics=coverage_metrics,
+        )
+    raise ValueError(f"Unknown NSQ fusion strategy: {strategy!r}")
 
 
 def _assemble_answer_context(blocks: Iterable[str], *, max_chars: int) -> str:
@@ -591,11 +1050,75 @@ class ChromaMetadataBackend(ChromaBackend):
 class ChromaMetadataNSQBackend(ChromaMetadataBackend):
     """Precomputed NSQ branches over the unchanged Chroma Metadata database."""
 
-    def __init__(self, *, nsq_branch_candidates: int, nsq_rrf_k: int, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        nsq_branch_candidates: int,
+        nsq_rrf_k: int,
+        nsq_fusion_strategy: str,
+        nsq_coverage_metrics: Iterable[str],
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.name = "chroma_metadata_nsq"
         self.nsq_branch_candidates = nsq_branch_candidates
         self.nsq_rrf_k = nsq_rrf_k
+        self.nsq_fusion_strategy = nsq_fusion_strategy
+        self.nsq_coverage_metrics = tuple(str(value).strip() for value in nsq_coverage_metrics if str(value).strip())
+
+    def _rescore_candidates_against_original_query(
+        self,
+        query: str,
+        branches: Iterable[tuple[str, list[RetrievedDoc]]],
+    ) -> tuple[dict[str, float], dict[str, str], dict[str, Any]]:
+        """Score the actual candidate chunks against the parent query embedding."""
+        evidence_ids = sorted(
+            {
+                _nsq_evidence_id(doc)
+                for _, docs in branches
+                for doc in docs
+                if _nsq_evidence_id(doc)
+            }
+        )
+        started = time.perf_counter()
+        if not evidence_ids:
+            return {}, {}, {"status": "no_candidate_evidence", "duration_ms": 0.0}
+        try:
+            embedded_query = self.embedding_function([query])
+            query_vector = embedded_query[0] if embedded_query else None
+            if query_vector is None:
+                raise RuntimeError("The Chroma embedding function returned no parent-query vector.")
+            stored = self.collection.get(
+                ids=evidence_ids,
+                include=["embeddings", "documents"],
+            )
+            stored_ids = list(stored.get("ids") or [])
+            embeddings = list(stored.get("embeddings") or [])
+            documents = list(stored.get("documents") or [])
+            scores: dict[str, float] = {}
+            texts: dict[str, str] = {}
+            for index, evidence_id in enumerate(stored_ids):
+                evidence_key = str(evidence_id)
+                vector = embeddings[index] if index < len(embeddings) else None
+                score = _cosine_similarity(query_vector, vector)
+                if score is not None:
+                    scores[evidence_key] = score
+                if index < len(documents):
+                    texts[evidence_key] = str(documents[index] or "")
+            return scores, texts, {
+                "status": "ok",
+                "candidate_evidence_requested": len(evidence_ids),
+                "candidate_evidence_rescored": len(scores),
+                "candidate_texts_loaded": len(texts),
+                "duration_ms": round((time.perf_counter() - started) * 1000, 3),
+            }
+        except Exception as exc:  # noqa: BLE001 - retain a runnable benchmark if optional rescoring fails.
+            return {}, {}, {
+                "status": "fallback_to_parent_branch_scores",
+                "error": str(exc),
+                "candidate_evidence_requested": len(evidence_ids),
+                "duration_ms": round((time.perf_counter() - started) * 1000, 3),
+            }
 
     def retrieve_with_plan(
         self,
@@ -612,17 +1135,30 @@ class ChromaMetadataNSQBackend(ChromaMetadataBackend):
             docs = super().retrieve(branch, n_results=per_branch)
             branch_results.append((branch, docs))
             branch_backend_diagnostics.append(dict(self._last_diagnostics))
-        fused, diagnostics = _fuse_nsq_documents(
+        parent_scores: dict[str, float] | None = None
+        evidence_texts: dict[str, str] | None = None
+        rescoring_diagnostics: dict[str, Any] = {"status": "not_requested"}
+        if self.nsq_fusion_strategy != "rrf":
+            parent_scores, evidence_texts, rescoring_diagnostics = (
+                self._rescore_candidates_against_original_query(query, branch_results)
+            )
+        fused, diagnostics = _select_nsq_fusion_strategy(
             branch_results,
             source=self.name,
             n_results=n_results,
+            strategy=self.nsq_fusion_strategy,
             rrf_k=self.nsq_rrf_k,
+            parent_scores=parent_scores,
+            evidence_texts=evidence_texts,
+            coverage_metrics=self.nsq_coverage_metrics,
         )
         self._last_diagnostics = {
             "nsq": {
                 **diagnostics,
                 "precomputed_subqueries_used": len(branches) - 1,
                 "per_branch_candidates": per_branch,
+                "strategy": self.nsq_fusion_strategy,
+                "parent_query_rescoring": rescoring_diagnostics,
             },
             "branch_retrieval_diagnostics": branch_backend_diagnostics,
         }
@@ -863,12 +1399,65 @@ class TemporalEngramNSQBackend(TemporalEngramBackend):
         *,
         nsq_branch_candidates: int,
         nsq_rrf_k: int,
+        nsq_fusion_strategy: str,
+        nsq_coverage_metrics: Iterable[str],
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
         self.name = "engram_temporal_nsq"
         self.nsq_branch_candidates = nsq_branch_candidates
         self.nsq_rrf_k = nsq_rrf_k
+        self.nsq_fusion_strategy = nsq_fusion_strategy
+        self.nsq_coverage_metrics = tuple(str(value).strip() for value in nsq_coverage_metrics if str(value).strip())
+
+    def _rescore_candidates_against_original_query(
+        self,
+        query: str,
+        branches: Iterable[tuple[str, list[RetrievedDoc]]],
+    ) -> tuple[dict[str, float], dict[str, str], dict[str, Any]]:
+        """Score existing Temporal Engram episodes against the parent query embedding."""
+        if self._context_memory is None:
+            self._context_memory = self.module.open_memory(self.store_dir, embedder=self.embedder)
+        evidence_ids = sorted(
+            {
+                _nsq_evidence_id(doc)
+                for _, docs in branches
+                for doc in docs
+                if _nsq_evidence_id(doc)
+            }
+        )
+        started = time.perf_counter()
+        if not evidence_ids:
+            return {}, {}, {"status": "no_candidate_evidence", "duration_ms": 0.0}
+        try:
+            query_vector = self.embedder.embed(query)
+            scores: dict[str, float] = {}
+            texts: dict[str, str] = {}
+            episodes = self._context_memory.episodes_doc
+            for evidence_id in evidence_ids:
+                episode = episodes.get(evidence_id)
+                if episode is None:
+                    continue
+                score = _cosine_similarity(query_vector, getattr(episode, "embedding", None))
+                if score is not None:
+                    scores[evidence_id] = score
+                text = str(getattr(episode, "content", "") or "")
+                if text:
+                    texts[evidence_id] = text
+            return scores, texts, {
+                "status": "ok",
+                "candidate_evidence_requested": len(evidence_ids),
+                "candidate_evidence_rescored": len(scores),
+                "candidate_texts_loaded": len(texts),
+                "duration_ms": round((time.perf_counter() - started) * 1000, 3),
+            }
+        except Exception as exc:  # noqa: BLE001 - preserve the benchmark with parent-branch-score fallback.
+            return {}, {}, {
+                "status": "fallback_to_parent_branch_scores",
+                "error": str(exc),
+                "candidate_evidence_requested": len(evidence_ids),
+                "duration_ms": round((time.perf_counter() - started) * 1000, 3),
+            }
 
     def _parent_filters(
         self,
@@ -1018,11 +1607,22 @@ class TemporalEngramNSQBackend(TemporalEngramBackend):
                 }
             )
 
-        fused, diagnostics = _fuse_nsq_documents(
+        parent_scores: dict[str, float] | None = None
+        evidence_texts: dict[str, str] | None = None
+        rescoring_diagnostics: dict[str, Any] = {"status": "not_requested"}
+        if self.nsq_fusion_strategy != "rrf":
+            parent_scores, evidence_texts, rescoring_diagnostics = (
+                self._rescore_candidates_against_original_query(query, branch_results)
+            )
+        fused, diagnostics = _select_nsq_fusion_strategy(
             branch_results,
             source=self.name,
             n_results=n_results,
+            strategy=self.nsq_fusion_strategy,
             rrf_k=self.nsq_rrf_k,
+            parent_scores=parent_scores,
+            evidence_texts=evidence_texts,
+            coverage_metrics=self.nsq_coverage_metrics,
         )
         self._last_diagnostics = {
             "nsq": {
@@ -1030,6 +1630,8 @@ class TemporalEngramNSQBackend(TemporalEngramBackend):
                 "precomputed_subqueries_used": len(branches) - 1,
                 "per_branch_candidates": per_branch,
                 "parent_filters": parent_filters.as_dict(),
+                "strategy": self.nsq_fusion_strategy,
+                "parent_query_rescoring": rescoring_diagnostics,
             },
             "branch_retrieval_diagnostics": branch_diagnostics,
         }
@@ -1159,6 +1761,11 @@ def _service_namespace_dir(data_dir: Path, namespace: str) -> Path:
 
 def _build_backends(args: argparse.Namespace) -> dict[str, RetrievalBackend]:
     requested = [name.strip() for name in args.systems.split(",") if name.strip()]
+    nsq_coverage_metrics = tuple(
+        value.strip()
+        for value in str(args.nsq_coverage_metrics or "").split(",")
+        if value.strip()
+    )
     backends: dict[str, RetrievalBackend] = {}
     for name in requested:
         if name == "chroma":
@@ -1194,6 +1801,8 @@ def _build_backends(args: argparse.Namespace) -> dict[str, RetrievalBackend]:
                 corpus_path=args.corpus,
                 nsq_branch_candidates=args.nsq_branch_candidates,
                 nsq_rrf_k=args.nsq_rrf_k,
+                nsq_fusion_strategy=args.nsq_fusion_strategy,
+                nsq_coverage_metrics=nsq_coverage_metrics,
             )
         elif name in {
             "chroma_metadata",
@@ -1279,6 +1888,8 @@ def _build_backends(args: argparse.Namespace) -> dict[str, RetrievalBackend]:
                 evidence_per_filing_summary=args.temporal_evidence_per_filing_summary,
                 nsq_branch_candidates=args.nsq_branch_candidates,
                 nsq_rrf_k=args.nsq_rrf_k,
+                nsq_fusion_strategy=args.nsq_fusion_strategy,
+                nsq_coverage_metrics=nsq_coverage_metrics,
             )
         elif name == "engram_temporal_graph":
             backends[name] = TemporalGraphEngramBackend(
@@ -1690,6 +2301,15 @@ def main() -> None:
     parser.add_argument("--shuffle", action="store_true", help="Shuffle before applying --limit.")
     parser.add_argument("--runs", type=int, default=1, help="Repeat the same selected QA set N times.")
     parser.add_argument("--warmup", type=int, default=1, help="Warmup queries per backend, not recorded.")
+    parser.add_argument(
+        "--progress-every",
+        type=int,
+        default=25,
+        help=(
+            "Print benchmark progress and save completed per-question results after this many "
+            "questions; use 0 to disable periodic progress checkpoints."
+        ),
+    )
     parser.add_argument("--top-ks", default=",".join(str(k) for k in DEFAULT_TOP_KS))
     parser.add_argument("--n-results", type=int, help="Retrieved unique doc_ids per query. Defaults to max top-k.")
     parser.add_argument("--pool-multiplier", type=int, default=4, help="Chunk pool multiplier before doc dedupe.")
@@ -1822,6 +2442,27 @@ def main() -> None:
         default=60,
         help="Reciprocal-rank fusion constant used to merge NSQ branch rankings.",
     )
+    parser.add_argument(
+        "--nsq-fusion-strategy",
+        choices=("rrf", "query-rerank", "coverage-slots"),
+        default="rrf",
+        help=(
+            "Final selection for chroma_metadata_nsq and engram_temporal_nsq: "
+            "'rrf' preserves the historical reciprocal-rank fusion; 'query-rerank' "
+            "ranks the NSQ candidate union only by the original question; 'coverage-slots' "
+            "reserves evidence slots for requested years and detected key metrics before "
+            "filling the remainder by original-question relevance."
+        ),
+    )
+    parser.add_argument(
+        "--nsq-coverage-metrics",
+        default="",
+        help=(
+            "Optional comma-separated literal metric/keypoint phrases that should receive a "
+            "coverage slot with --nsq-fusion-strategy coverage-slots. Automatically detected "
+            "financial metrics are always included."
+        ),
+    )
 
     parser.add_argument("--engram-data-dir", type=Path, default=DEFAULT_ENGRAM_DATA_DIR)
     parser.add_argument("--engram-store-dir", type=Path)
@@ -1944,6 +2585,8 @@ def main() -> None:
         raise ValueError("--runs must be positive")
     if args.warmup < 0:
         raise ValueError("--warmup must be non-negative")
+    if args.progress_every < 0:
+        raise ValueError("--progress-every must be non-negative")
     if args.answer_sample_size <= 0:
         raise ValueError("--answer-sample-size must be positive")
     if args.answer_context_chars <= 0:
@@ -2014,9 +2657,28 @@ def main() -> None:
     )
     backends = _build_backends(args)
 
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    prefix = args.output_prefix or f"retrieval_benchmark_{_utc_now_slug()}"
+    summary_path = args.output_dir / f"{prefix}_summary.json"
+    details_path = args.output_dir / f"{prefix}_details.jsonl"
+    checkpoint_path = args.output_dir / f"{prefix}_checkpoint.json"
+    total_questions = len(examples) * args.runs
+    total_system_evaluations = total_questions * len(backends)
+    print(
+        "[Benchmark] starting "
+        f"{total_questions} questions across {len(backends)} system(s) "
+        f"({total_system_evaluations} retrieval evaluations); "
+        f"progress checkpoint every {args.progress_every or 'disabled'} questions.",
+        flush=True,
+    )
+
     if args.warmup and examples:
         warmup_examples = examples[: args.warmup]
-        for backend in backends.values():
+        print(
+            f"[Benchmark] warming up {len(backends)} system(s) with {len(warmup_examples)} question(s)",
+            flush=True,
+        )
+        for system, backend in backends.items():
             for example in warmup_examples:
                 _run_backend(
                     backend,
@@ -2024,9 +2686,58 @@ def main() -> None:
                     n_results=n_results,
                     subqueries=example.get("subqueries"),
                 )
+            print(f"[Benchmark] warmup complete: {system}", flush=True)
 
     rows: list[dict[str, Any]] = []
     started_at = datetime.now(timezone.utc).isoformat()
+    started_monotonic = time.perf_counter()
+    completed_questions = 0
+
+    def _save_benchmark_checkpoint(*, run_id: int, example_index: int, qid: str) -> None:
+        """Persist complete question-level results without claiming resumability."""
+        _write_jsonl(details_path, rows)
+        elapsed_seconds = time.perf_counter() - started_monotonic
+        eta_seconds = (
+            elapsed_seconds / completed_questions * (total_questions - completed_questions)
+            if completed_questions
+            else 0.0
+        )
+        checkpoint_payload = {
+            "status": "in_progress" if completed_questions < total_questions else "completed",
+            "started_at_utc": started_at,
+            "checkpointed_at_utc": datetime.now(timezone.utc).isoformat(),
+            "qa_file": str(args.qa_file),
+            "systems": list(backends),
+            "runs": args.runs,
+            "examples_per_run": len(examples),
+            "completed_questions": completed_questions,
+            "total_questions": total_questions,
+            "completed_system_evaluations": len(rows),
+            "total_system_evaluations": total_system_evaluations,
+            "last_completed": {
+                "run_id": run_id,
+                "example_index": example_index,
+                "qid": qid,
+            },
+            "elapsed_seconds": round(elapsed_seconds, 3),
+            "estimated_remaining_seconds": round(eta_seconds, 3),
+            "details_path": str(details_path),
+            "resume_note": (
+                "Completed rows are durable, but this benchmark does not automatically resume. "
+                "Use the details JSONL for partial analysis or rerun to produce a complete benchmark."
+            ),
+        }
+        checkpoint_path.write_text(
+            json.dumps(checkpoint_payload, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        print(
+            "[Benchmark] checkpoint saved: "
+            f"{completed_questions}/{total_questions} questions, {len(rows)}/"
+            f"{total_system_evaluations} retrieval evaluations, elapsed {elapsed_seconds / 60:.1f}m, "
+            f"estimated remaining {eta_seconds / 60:.1f}m. Completed results are safe on disk.",
+            flush=True,
+        )
+
     for run_id in range(1, args.runs + 1):
         for index, example in enumerate(examples):
             question = str(example.get("question", ""))
@@ -2066,6 +2777,12 @@ def main() -> None:
                         "metrics": _metrics_for_ranking(ranked_doc_ids, gold_doc_ids, top_ks),
                     }
                 )
+            completed_questions += 1
+            is_final_question = completed_questions == total_questions
+            if args.progress_every and (
+                completed_questions % args.progress_every == 0 or is_final_question
+            ):
+                _save_benchmark_checkpoint(run_id=run_id, example_index=index, qid=qid)
 
     summary = _summarize(rows, top_ks)
     finished_at = datetime.now(timezone.utc).isoformat()
@@ -2080,6 +2797,7 @@ def main() -> None:
         "n_results": n_results,
         "settings": {
             "pool_multiplier": args.pool_multiplier,
+            "progress_every": args.progress_every,
             "embedding_backend": args.embedding_backend,
             "embedding_model": args.embedding_model,
             "device": args.device,
@@ -2096,6 +2814,12 @@ def main() -> None:
             "year_branch_candidates": args.year_branch_candidates,
             "nsq_branch_candidates": args.nsq_branch_candidates,
             "nsq_rrf_k": args.nsq_rrf_k,
+            "nsq_fusion_strategy": args.nsq_fusion_strategy,
+            "nsq_coverage_metrics": [
+                value.strip()
+                for value in str(args.nsq_coverage_metrics or "").split(",")
+                if value.strip()
+            ],
             "nsq_temporal_company_model": args.nsq_temporal_company_model,
             "corpus_path": str(args.corpus),
             "engram_mode": args.engram_mode,
@@ -2123,10 +2847,6 @@ def main() -> None:
         "summary": summary,
     }
 
-    args.output_dir.mkdir(parents=True, exist_ok=True)
-    prefix = args.output_prefix or f"retrieval_benchmark_{_utc_now_slug()}"
-    summary_path = args.output_dir / f"{prefix}_summary.json"
-    details_path = args.output_dir / f"{prefix}_details.jsonl"
     summary_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     _write_jsonl(details_path, rows)
     _print_summary(summary, top_ks)
