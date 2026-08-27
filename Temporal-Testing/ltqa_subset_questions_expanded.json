@@ -1,0 +1,406 @@
+{
+  "source_questions_file": "ltqa_subset_questions.json",
+  "generation_scope": "Each expanded question was written from the original question alone. It contains no source, answer, retrieval, or gold-label information.",
+  "records": [
+    {
+      "q_id": "qa_2_000456",
+      "expanded_question": "Compare Green Stream Holdings Inc.'s 2019 and 2021 strategic positioning, business model, and major initiatives. Identify the named products or market segments emphasized in each year; describe the revenue model, ownership or operating role, and contract structure in each year; and report every stated project, lease, customer, or property-owner count, contract term, financing initiative, and implementation milestone. Explain how the shift changes the company's route to revenue and cash-flow generation."
+    },
+    {
+      "q_id": "qa_2_000102",
+      "expanded_question": "For BeiGene's BRUKINSA in 2022 and 2023, report the exact number of markets in which the product was approved, identify the product indications and geographic markets discussed, and compare the exact language used to characterize its position in China's BTK-inhibitor market. Distinguish market-access breadth, clinical differentiation, market-share or leadership claims, and any reported sales-growth percentage."
+    },
+    {
+      "q_id": "qa_2_001126",
+      "expanded_question": "Compare the 2023 and 2024 risk-factor disclosures for the company. Identify the exact title of every hemp-specific risk category, list the legal, regulatory, agricultural, operational, competition, and product-related keywords present in 2023, and state which of those items were removed, shortened, or folded into broader categories in 2024. Explain what the change could imply about the relative strategic importance of hemp operations versus cannabis infrastructure and U.S. expansion."
+    },
+    {
+      "q_id": "qa_2_001003",
+      "expanded_question": "Compare AGILYSYS INC's 2019 and 2020 foreign-exchange-risk disclosures. Name the exact foreign currency or currencies cited in each year, quote the changed wording, and report international-operations revenue for each cited fiscal year in dollars and as a percentage of total revenue if disclosed. Calculate the dollar and percentage-point change in international revenue and explain whether the change broadens, narrows, or redirects the stated currency exposure."
+    },
+    {
+      "q_id": "qa_2_000914",
+      "expanded_question": "Compare Veracyte's competitive-landscape discussion in 2020 and 2021. List the competitor types, market participants, product categories, and competitive factors named in each year; identify every stated competitive advantage; and separate continuities from newly added or removed advantages. Explain how the wording changes the company's claimed differentiation in diagnostics, reimbursement, clinical evidence, technology, sales execution, or market access."
+    },
+    {
+      "q_id": "qa_2_000571",
+      "expanded_question": "Compare Lamb Weston Holdings Inc.'s 2020 and 2021 investment and capital-allocation priorities. Identify every named spending category, including capacity expansion, productivity, technology, acquisitions, dividends, debt reduction, share repurchases, and other uses of cash; report each disclosed dollar amount, commitment, or target; and explain how the ranking of growth investment versus shareholder returns or balance-sheet priorities changed."
+    },
+    {
+      "q_id": "qa_2_000419",
+      "expanded_question": "Compare Goldman Sachs Group Inc.'s 2020 and 2021 product, platform, and technology strategy. Name the key consumer, wealth-management, transaction-banking, data, cloud, digital, and institutional platforms mentioned in each year; identify launches, partnerships, acquisitions, or innovation programs; and report any customer, asset, user, revenue, investment, or adoption figures. Explain how the portfolio evolved from 2020 to 2021."
+    },
+    {
+      "q_id": "qa_2_002233",
+      "expanded_question": "Compare PENN Entertainment Inc.'s board composition in 2022 and 2023. Report the total director count, independent-director count, non-independent count, female-director count, racial or ethnic diversity count, committee or chair changes, and every percentage disclosed for independence and diversity. Identify director additions, departures, or role changes, calculate year-over-year changes, and explain the governance trend reflected by the figures."
+    },
+    {
+      "q_id": "qa_2_000356",
+      "expanded_question": "From 2019 through 2021, identify GEX MANAGEMENT INC's named strategic initiatives supporting its business-model shift. For each initiative, state the date, counterparties or assets involved, operating objective, and financial-structure effect. Report all disclosed equity issuances, debt, cash, financing, acquisitions, divestitures, contracts, ownership changes, and dollar amounts; then explain how those decisions changed the company's capital structure and funding model."
+    },
+    {
+      "q_id": "qa_2_002418",
+      "expanded_question": "For VERACYTE INC, report total auditor fees and each component—Audit Fees, Audit-Related Fees, Tax Fees, and All Other Fees—for 2022, 2023, and 2024, using the 2024 and 2025 reports where applicable. Calculate the dollar and percentage change in total fees for 2022-to-2023 and 2023-to-2024, identify the component with the largest absolute increase, and explain the stated operational, transaction, accounting, compliance, or audit-scope reasons for the increase."
+    },
+    {
+      "q_id": "qa_2_001728",
+      "expanded_question": "Compare CADIZ INC's 2020 and 2021 Northern Pipeline right-of-way-permit disclosures. Identify the permitting agencies, exact legal basis or asserted rights, permits or approvals at issue, arguments advanced by CADIZ and opposing parties, procedural dates, and court or agency actions. State what the BLM's December 2021 motion requested, what legal or operational outcome it could produce, and how that outcome could affect project timing, cost, or viability."
+    },
+    {
+      "q_id": "qa_2_000130",
+      "expanded_question": "Compare CADIZ INC's 2020 and 2021 revenue structure and outlook. Report revenue by agricultural operations, water-project activities, and any other disclosed segment; include exact dollar amounts, percentages of revenue, losses, project capacity, customers, contracts, and forecasted milestones. Calculate the change in each revenue source and explain how the transition from agriculture to the Water Project affects the company's expected revenue base, funding needs, and financial outlook."
+    },
+    {
+      "q_id": "qa_2_000122",
+      "expanded_question": "Compare Bitcoin Depot Inc.'s technology-development and R&D priorities in 2022 and 2024. Identify the software, hardware, platform, cybersecurity, product, transaction, wallet, kiosk, mobile, data, or operational capabilities named in each period. Report any development spending, engineer or employee counts, deployment counts, release dates, partnership details, or performance metrics, and explain the move from transaction-combination planning to an operating-company technology roadmap."
+    },
+    {
+      "q_id": "qa_2_000383",
+      "expanded_question": "Compare GILEAD SCIENCES INC's oncology portfolio in 2021 and 2022. List marketed oncology products, pipeline candidates, indications, clinical-trial phases, regulatory milestones, collaborations, acquisitions, and launch or revenue figures for each year. Identify additions, removals, or changes in development priority, and explain how the mix of marketed products and pipeline assets changed the scale and direction of the oncology strategy."
+    },
+    {
+      "q_id": "qa_2_000895",
+      "expanded_question": "Compare Valero Energy Corporation's 2022 and 2024 treatment of costs associated with Renewable and Low-Carbon Fuel Programs. Identify the exact accounting treatment, expense or capital category, business segment, note, table, and disclosure location in each report. Report all program cost, expense, capital-investment, operating-income, margin, or segment-performance figures; then explain whether the disclosure permits a reader to isolate the programs' effect on each business segment."
+    },
+    {
+      "q_id": "qa_2_000952",
+      "expanded_question": "Compare VF CORP's Fiscal 2020 and Fiscal 2021 descriptions of technology and supply-chain capabilities. Identify digital-commerce, data, planning, inventory, sourcing, logistics, distribution, manufacturing, automation, and customer-facing technology initiatives in each year. Report any supplier, facility, distribution-center, delivery, inventory, investment, or digital-sales figures, and explain whether the emphasis shifted toward resilience, speed, visibility, direct-to-consumer execution, or cost efficiency."
+    },
+    {
+      "q_id": "qa_2_002069",
+      "expanded_question": "For Canopy Growth Corp, report the aggregate number of shares and percentage ownership held by directors and officers as a group in 2021 and 2022. Separate common-share classes, options, restricted awards, and beneficial ownership if disclosed; calculate the absolute share change and percentage-point change; and identify whether the movement reflects grants, exercises, purchases, sales, dilution, or changes in the reporting group."
+    },
+    {
+      "q_id": "qa_2_002465",
+      "expanded_question": "Using BeiGene's 2020, 2021, and 2022 reports, list every executive eligible for the annual bonus plan in each year and report the actual bonus-achievement percentage for each executive. Calculate the unweighted average achievement rate for the executives listed in 2020, 2021, and 2022; state the year-over-year percentage-point changes; identify the highest and lowest rates; and explain what the three-year pattern indicates about company performance and incentive outcomes."
+    },
+    {
+      "q_id": "qa_2_000108",
+      "expanded_question": "For BeOne Medicines Ltd, report total global revenue and product revenue for 2022, 2023, and 2024 using the exact stated figures. Calculate annual dollar growth, annual percentage growth, product revenue as a share of total revenue, and the cumulative growth from 2022 to 2024. Identify any product, market, pricing, volume, approval, or commercialization drivers specifically tied to the reported trend and assess the evidence for commercial scaling."
+    },
+    {
+      "q_id": "qa_2_002298",
+      "expanded_question": "Compare RALPH LAUREN CORP's institutional ownership in 2020 and 2021. List the top three institutional shareholders, their exact shareholdings, ownership percentages, and changes in rank; calculate the combined ownership concentration of the top three in each year and the percentage-point change. Identify every holder that entered or exited the top three and explain whether ownership became more concentrated or more dispersed."
+    },
+    {
+      "q_id": "qa_2_000814",
+      "expanded_question": "Compare Sunnova Energy International Inc.'s 2020 and 2021 funding sources for growth. Identify each equity, debt, warehouse, tax-equity, securitization, asset-backed, customer, partnership, and project-finance source; report committed capacity, proceeds, borrowings, interest rates, maturities, and dollar amounts. Calculate any material year-over-year changes and explain how the funding mix evolved to support customer growth, installations, and retained assets."
+    },
+    {
+      "q_id": "qa_2_002232",
+      "expanded_question": "Compare PENN Entertainment's 105.05% LTIP performance-award payout based on 2019 performance with its 150.00% payout based on first-year 2021 performance. Calculate the percentage-point increase and relative percentage increase, identify the performance metrics, target ranges, and payout caps used in each period, and relate the comparison to the operating environment, revenue, profitability, reopening, acquisitions, digital activity, or other business conditions explicitly discussed for those years."
+    },
+    {
+      "q_id": "qa_2_001718",
+      "expanded_question": "Trace the ABRAXANE-related arbitration between BeiGene and BMS-Celgene from 2020 through the 2022 and 2023 reporting periods. Build a dated timeline of notice, claim, arbitration, motions, hearings, awards, settlements, appeals, payments, accounting treatment, and final resolution. State each party's asserted position, every claimed or awarded dollar amount, and the legal, financial, product, or commercial implications of the final outcome."
+    },
+    {
+      "q_id": "qa_2_000902",
+      "expanded_question": "Compare Valero Energy Corporation's 2022 and 2024 descriptions of renewable diesel business advantages for DGD. Identify capacity, feedstock, location, logistics, low-carbon-intensity, regulatory-credit, joint-venture, cost, demand, margin, and technology advantages mentioned in each year. Report all capacity, production, investment, credit, emissions, or financial figures and explain which advantages were retained, deepened, newly quantified, or reframed by 2024."
+    },
+    {
+      "q_id": "qa_2_001839",
+      "expanded_question": "Compare LANCASTER COLONY CORP's 2019 and 2020 descriptions of the consequences of unfavorable legal rulings. List every stated operational consequence, financial consequence, legal remedy, cost, disruption, reputational effect, and management or insurance implication common to both years. Then identify the exact new context, proceedings, claims, legal standards, or qualifiers added in 2020 and explain how the later disclosure changes the assessed scope of the risk."
+    },
+    {
+      "q_id": "qa_2_002413",
+      "expanded_question": "For VERACYTE INC CEO Marc Stapley, report Compensation Actually Paid and Summary Compensation Table Total for each of the two years shown in the 2024 and 2025 reports. Calculate CAP minus SCT Total, the absolute difference, and the difference as a percentage of SCT Total for each year. Break down the components driving the divergence—especially stock or option valuation changes, pension effects, cash compensation, and other adjustments—and identify the primary driver."
+    },
+    {
+      "q_id": "qa_2_001139",
+      "expanded_question": "Compare EACO CORP's cybersecurity and data-protection risk disclosures in 2019 and 2022. Identify every reference to cyberattack, system outage, data breach, privacy law, third party, customer data, insurance, business interruption, regulatory penalty, and mitigation control. Quote the key changes in wording, state any named laws, incidents, controls, costs, or time horizons, and explain whether the later disclosure signals broader exposure, greater specificity, or stronger mitigation efforts."
+    },
+    {
+      "q_id": "qa_2_000026",
+      "expanded_question": "For AGILYSYS INC, report Subscription and maintenance revenue and total revenue for fiscal 2021, fiscal 2022, and fiscal 2023. Calculate subscription-and-maintenance revenue as a percentage of total revenue in each year, the year-over-year percentage-point change, the dollar growth of both measures, and the compound change over the period. Identify the products, contracts, recurring-revenue initiatives, or customer trends that explain whether the strategic shift toward recurring revenue succeeded."
+    },
+    {
+      "q_id": "qa_2_000653",
+      "expanded_question": "Compare NextPlat Corp's 2021 and 2022 operational footprint and human-capital profile. Report total employees, full-time and part-time employees if available, countries, offices, facilities, stores, distribution locations, markets entered, acquisitions, and geographic segments in each year. Calculate changes in employee count and geographic presence, and explain whether the pattern reflects organic expansion, acquisition-led expansion, operational consolidation, or international diversification."
+    },
+    {
+      "q_id": "qa_2_001731",
+      "expanded_question": "Compare CADIZ INC's 2021 and 2022 assessment of whether legal proceedings could materially affect its business, financial condition, results of operations, liquidity, or Water Project. Quote the materiality language in each disclosure, list every relevant 2021 legal event, agency action, motion, decision, or permit development, and explain how those events support or challenge the later assessment."
+    },
+    {
+      "q_id": "qa_2_001393",
+      "expanded_question": "Compare LANCASTER COLONY CORP's 2020 and 2021 multiemployer-pension-plan disclosures. Name the plan, report its zone status, funding classification, collective-bargaining status, withdrawal liability information, and fiscal-year employer contributions for each year. Calculate the dollar change in contributions, identify all wording or status changes, and explain how the revised disclosure changes the perceived pension funding risk."
+    },
+    {
+      "q_id": "qa_2_001138",
+      "expanded_question": "Compare COMFORT SYSTEMS USA INC's ESG-related risk disclosure in 2021 and 2022. Identify every environmental, climate, social, governance, investor, customer, employee, regulatory, disclosure, reputational, litigation, or compliance risk named in each year. Specify new laws, standards, stakeholder expectations, reporting requirements, penalties, or reputational effects added in 2022 and explain how they expand the earlier ESG risk framing."
+    },
+    {
+      "q_id": "qa_2_000636",
+      "expanded_question": "Compare LANCASTER COLONY CORP's 2022 and 2023 approach to supply-chain management and raw-material sourcing within its growth strategy. Identify named commodities, suppliers, procurement methods, manufacturing or distribution investments, inventory initiatives, pricing actions, contract terms, and resilience measures. Report any supplier counts, cost figures, capacity additions, capital expenditures, or timing targets, and explain how supply-chain priorities support growth and investment goals."
+    },
+    {
+      "q_id": "qa_2_000881",
+      "expanded_question": "Compare Valero Energy Corporation's Comprehensive Liquid Fuels Strategy in 2021 and 2022. Identify the fuels, facilities, renewable projects, capital investments, feedstocks, technology, partnerships, regulatory programs, and emissions or credit mechanisms named in each year. Report capacity, investment, production, regulatory, or low-carbon figures, and explain how changes in regulations, incentives, standards, or energy policy drove a more detailed strategy in 2022."
+    },
+    {
+      "q_id": "qa_2_001378",
+      "expanded_question": "Compare LANCASTER COLONY CORP's 2019 and 2020 risk-factor lists item by item. Identify every 2019 standalone risk factor that is absent as a separately titled or detailed item in 2020, quote the relevant headings and key language, and state whether each risk was removed, shortened, merged, relocated, or absorbed into a broader category. Explain how the 2020 organization changes the prominence and interpretation of each risk."
+    },
+    {
+      "q_id": "qa_2_000418",
+      "expanded_question": "Compare Goldman Sachs Group Inc.'s 2020 and 2021 regulatory capital and liquidity requirements. Identify all named regulators, capital ratios, leverage ratios, liquidity ratios, buffers, stress-test requirements, resolution-planning requirements, and systemically important institution designations. Report each stated minimum, actual ratio, surcharge, or buffer in percentage terms, calculate changes where possible, and state whether the company's regulatory designation changed."
+    },
+    {
+      "q_id": "qa_2_000379",
+      "expanded_question": "Compare GILEAD SCIENCES INC's 2021 and 2022 business-model and portfolio-building strategy. Identify every named therapeutic area, marketed-product priority, pipeline approach, acquisition, collaboration, licensing transaction, research investment, commercialization initiative, and capital-allocation decision. Report any deal values, milestone payments, product counts, clinical-stage counts, revenue figures, or investment amounts and explain how the portfolio-building approach changed."
+    },
+    {
+      "q_id": "qa_2_001556",
+      "expanded_question": "Compare Sunnova Energy International Inc.'s 2020 and 2021 disclosures of historical operating losses and net losses. Report operating loss, net loss, accumulated deficit, revenue, gross profit or loss, interest expense, stock-based compensation, impairment, tax, and other major components for each year. Calculate year-over-year dollar and percentage changes and explain which cost, financing, growth, or accounting factors drove the change in profitability challenges."
+    },
+    {
+      "q_id": "qa_2_000396",
+      "expanded_question": "Compare GILEAD SCIENCES INC's 2022 and 2023 external business-development activity. List acquisitions, collaborations, licensing agreements, equity investments, option agreements, research partnerships, and divestitures; state therapeutic areas, counterparties, upfront payments, milestones, royalties, equity amounts, and transaction dates. Explain how the composition and scale of these transactions reveal changes in investment focus and capital-allocation priorities."
+    },
+    {
+      "q_id": "qa_2_001470",
+      "expanded_question": "Compare NORTH EUROPEAN OIL ROYALTY TRUST's quarterly royalty income and net income for fiscal 2023 and 2024. Report every quarter’s royalty income, net income, per-unit or per-share amount if given, and total annual amount; calculate quarter-over-quarter and year-over-year changes; identify the quarters with the largest increase and decrease; and relate volatility to oil and gas prices, production volumes, exchange rates, operator activity, or other stated operational and market risks."
+    },
+    {
+      "q_id": "qa_2_001408",
+      "expanded_question": "Compare LANCASTER COLONY CORP's 2021 and 2022 collective-bargaining and work-stoppage risk disclosures. Name the specific expiring labor contract, bargaining unit, location, employee group, expiration date, and stated negotiation status in each year. List every potential consequence—production disruption, labor cost, customer service, supply, financial loss, or legal exposure—and explain how the changed wording affects the assessed likelihood or severity of a work stoppage."
+    },
+    {
+      "q_id": "qa_2_002472",
+      "expanded_question": "Compare the fiscal 2020 and fiscal 2021 long-term incentive-plan provisions for time-vesting equity awards. Identify the award types, vesting dates, number of installments, percentage vesting per installment, service conditions, retirement, termination, death, disability, change-in-control, and forfeiture provisions. State the exact vesting schedule in each year and identify every continuity or modification in timing, conditions, or treatment on separation."
+    },
+    {
+      "q_id": "qa_2_001083",
+      "expanded_question": "Compare Bitcoin Depot Inc.'s cybersecurity and data-protection risks in 2022 and 2024. Separate general IT-system, network, software, cyberattack, data-breach, private-key, wallet, digital-asset custody, fraud, third-party, and customer-data risks. Identify every new threat, control, data category, legal exposure, financial loss, operational disruption, or reputational consequence introduced in 2024 and explain how the risk discussion changes from broad technology exposure to digital-asset and sensitive-user-data exposure."
+    },
+    {
+      "q_id": "qa_2_000177",
+      "expanded_question": "Compare Canopy Growth Corp's 2021 and 2022 approach to customer segments and market channels. Identify medical-cannabis, adult-use, retail, e-commerce, clinic, wholesale, international, and direct-to-consumer channels; report customer, patient, store, clinic, market, revenue, or product figures for each channel; and explain how the company changed its medical-channel strategy, retail operations, distribution model, and target customer base."
+    },
+    {
+      "q_id": "qa_2_001881",
+      "expanded_question": "For RALPH LAUREN CORP's 2019 and 2020 legal-proceedings disclosures, reproduce the exact caveat stating that management's assessment may change. Compare the wording word for word, including references to facts, circumstances, developments, estimates, reserves, probability, materiality, or outcomes. State whether any word, qualifier, legal standard, or time reference changed and explain the practical significance of unchanged versus revised language."
+    },
+    {
+      "q_id": "qa_2_002196",
+      "expanded_question": "Compare Journey Medical Corp CFO Joseph Benesch's 2022 and 2023 compensation. Using the 2024 report, report his 2023 salary, bonus, stock awards, option awards, non-equity incentive compensation, other compensation, and total compensation. Identify the largest component by dollar amount, calculate its share of total compensation, and compare each major component and total compensation with the 2022 compensation arrangement."
+    },
+    {
+      "q_id": "qa_2_000511",
+      "expanded_question": "Compare Invesco DB Oil Fund's 2021 and 2022 description of its primary product offering and share-creation/redemption mechanism. Identify the benchmark or exposure offered, share class, basket size, authorized participants, cash or in-kind process, transaction timing, fees, and settlement procedures. State whether any product objective, commodity exposure, creation-unit size, redemption condition, or operational process changed."
+    },
+    {
+      "q_id": "qa_2_001550",
+      "expanded_question": "Compare Sunnova Energy International Inc.'s 2021 and 2022 risk disclosures concerning Puerto Rico's electricity infrastructure. Identify every reference to grid reliability, hurricanes, earthquakes, outages, fuel supply, utility counterparties, interconnection, regulatory action, customer payment, insurance, repair, and system performance. Name the specific new event added in 2022, give its date and stated consequences, and explain how it broadens the infrastructure-risk discussion."
+    },
+    {
+      "q_id": "qa_2_000322",
+      "expanded_question": "Compare FIGS Inc's 2022 and 2023 revenue composition, emphasizing core scrubwear. Report total revenue, core scrubwear revenue, non-scrubwear revenue, domestic and international revenue, direct and wholesale revenue, and each category's percentage of total revenue. Calculate dollar and percentage changes, identify whether scrubwear gained or lost mix share, and explain what the shift implies for product concentration, category expansion, and growth quality."
+    },
+    {
+      "q_id": "qa_2_002261",
+      "expanded_question": "For PENN Entertainment, report the total potential payment for Change in Control Termination without Cause in 2020, 2022, and 2023, using raw dollar values for each named executive. Break each total into salary, bonus, equity acceleration, benefits, pension, severance, tax gross-up, and other components; calculate the absolute and percentage change from 2020 to 2023; identify the component with the largest dollar contribution to the change; and avoid using percentage-only comparisons where the tables provide raw amounts."
+    },
+    {
+      "q_id": "qa_2_001200",
+      "expanded_question": "Compare FIGS Inc's 2023 and 2024 international-expansion risk disclosures. List every inherent risk named in each year, including regulatory, currency, tax, supply-chain, product, data, customer, political, and operational risks. State the countries, regions, or shipping geographies identified as current operations in each disclosure; identify additions, deletions, or rewording; and explain whether the geographic scope or risk specificity expanded."
+    },
+    {
+      "q_id": "qa_2_001481",
+      "expanded_question": "Compare PENN Entertainment Inc.'s 2021 and 2022 supply-chain-delay risk factor. Quote the key language in each year; identify every product, input, equipment, supplier, transportation, labor, inflation, shortage, demand, or macroeconomic keyword; and state whether the risk moved from a narrow operational issue to a broader industry or economic concern. Include every explicitly named cause, time horizon, cost effect, and potential consequence."
+    },
+    {
+      "q_id": "qa_2_002364",
+      "expanded_question": "For VERACYTE INC, report total fees paid to PwC in 2020 and 2021 and separately report Audit Fees, Audit-Related Fees, Tax Fees, and All Other Fees. Calculate the dollar change and percentage change in total fees and in each component. Identify the component responsible for the largest increase or decrease and explain the specific audit, accounting, financing, transaction, compliance, or scope-of-work reason given for the change."
+    },
+    {
+      "q_id": "qa_2_000787",
+      "expanded_question": "Compare RALPH LAUREN CORP's Fiscal 2024 and Fiscal 2025 wholesale-distribution network and human-capital strategy. Identify wholesale partners, geographic markets, distribution channels, store or digital integration, employee counts, workforce categories, talent programs, compensation, diversity, training, labor relations, and productivity initiatives. Report all stated counts, percentages, investments, closures, openings, or efficiency targets and explain how the network and workforce strategy evolved."
+    },
+    {
+      "q_id": "qa_2_000284",
+      "expanded_question": "Compare Eagle Materials Inc.'s 2022 and 2023 growth-strategy descriptions. Identify capacity projects, plant locations, acquisitions, new markets, distribution expansion, product lines, capital investments, cost initiatives, and customer or geographic priorities. Report all stated capacity, tonnage, dollar-investment, plant-count, market-share, or timing figures and explain whether geographic expansion became a more central growth lever or was reframed around other priorities."
+    },
+    {
+      "q_id": "qa_2_000187",
+      "expanded_question": "Compare Canopy Growth Corp's international medical-cannabis operations and market presence in 2022 and 2023. Identify countries, markets, distribution partners, clinics, customers, product formats, licenses, exports, regulatory approvals, and commercial channels mentioned in each year. Report market counts, revenue, patient, product, or partnership figures where disclosed, and explain whether the international strategy expanded, contracted, shifted geographically, or changed its operating model."
+    },
+    {
+      "q_id": "qa_2_000933",
+      "expanded_question": "Compare Veracyte's stated competitive advantages in 2022 and 2023. List every advantage related to clinical evidence, test performance, reimbursement, technology, data, physician adoption, sales force, laboratory operations, payer access, product breadth, and intellectual property. Identify new or removed claims, report supporting performance, reimbursement, customer, or revenue figures, and explain what the change implies about the company's strategic focus and differentiation."
+    },
+    {
+      "q_id": "qa_2_001185",
+      "expanded_question": "Compare Equitable Holdings Inc.'s 2020 and 2021 LIBOR-transition disclosures. Identify the contracts, products, reference rates, fallback provisions, counterparties, operational systems, legal issues, and regulatory deadlines discussed. State every new 2021 action, including contract remediation, alternative-rate adoption, system changes, committee oversight, or risk-management step; report impacted balances or notional amounts if available; and explain the new risks introduced by the transition."
+    },
+    {
+      "q_id": "qa_2_000326",
+      "expanded_question": "Compare FIGS Inc's 2022 and 2023 growth strategies and investment priorities. Identify new product categories, geographic expansion, customer segments, marketing, technology, supply-chain, retail, wholesale, hiring, capital expenditures, share repurchases, acquisitions, and other uses of cash. Report all stated investment amounts, revenue targets, product counts, market figures, or timing milestones and explain how capital allocation shifted between growth initiatives and profitability or shareholder-return priorities."
+    },
+    {
+      "q_id": "qa_2_000953",
+      "expanded_question": "Compare VF CORP's Fiscal 2020 and Fiscal 2021 global footprint. Report sourcing countries, supplier or factory counts, manufacturing locations, distribution centers, retail-store counts, store openings and closures, direct-to-consumer markets, and geographic revenue or channel mix. Calculate changes in sourcing and store-network scale where figures are available, and explain whether the company expanded, consolidated, diversified, or rebalanced its global operating footprint."
+    },
+    {
+      "q_id": "qa_2_000413",
+      "expanded_question": "Compare GILEAD SCIENCES INC's 2023 and 2024 oncology-pipeline growth strategy. List each key candidate, indication, clinical phase, trial name, regulatory milestone, partnership, acquisition, and investment mentioned in each year. Report patient-enrollment, trial, approval, revenue, deal-value, or milestone figures and explain which candidates advanced, entered new studies, gained priority, or were deprioritized in 2024."
+    },
+    {
+      "q_id": "qa_2_001857",
+      "expanded_question": "Compare NORTH EUROPEAN OIL ROYALTY TRUST's 2020 and 2021 legal-proceedings disclosures. Identify all lawsuits, claims, regulatory matters, counterparties, courts, dates, alleged damages, reserves, insurance, and stated outcomes. Explain whether the number, severity, or wording of legal matters changed, and assess what the disclosures imply about operational continuity, royalty payments, administration, financial exposure, and residual legal-risk level."
+    },
+    {
+      "q_id": "qa_2_001494",
+      "expanded_question": "Compare Phillips 66's 2020 and 2022 market-risk disclosures to identify the major business-structure change introduced by 2022. Name the newly relevant business, partnership, segment, asset class, or transaction; list the new commodity, interest-rate, foreign-exchange, credit, liquidity, or counterparty risks; and identify the related governance, committee, policy, hedging, or risk-management structures. Report all stated exposures, notional amounts, sensitivity figures, or segment amounts."
+    },
+    {
+      "q_id": "qa_2_000666",
+      "expanded_question": "Compare NORTHWEST NATURAL GAS CO's 2020 and 2021 market position and customer base in natural gas and water utilities. Report customers by segment, residential, commercial, industrial, transportation, and water categories; service territories; rate base; utility acquisitions; connections; volumes; revenue; and market-share or growth figures. Calculate segment changes and explain whether natural gas and water operations followed different expansion, diversification, or customer-growth paths."
+    },
+    {
+      "q_id": "qa_2_001516",
+      "expanded_question": "Compare RALPH LAUREN CORP's 2022 and 2023 risk disclosure for large wholesale customers. Report the exact customer-concentration metric, including number of customers and percentage of net revenue, for each year; identify Macy's store-closure or other cited retail-industry developments; and list potential effects of consolidation, closures, bankruptcies, reduced orders, payment risk, or loss of distribution. Explain how the quantified dependence and risk framing changed."
+    },
+    {
+      "q_id": "qa_2_001455",
+      "expanded_question": "Compare NORTH EUROPEAN OIL ROYALTY TRUST's 2020 and 2021 foreign-exchange and commodity-price market-risk wording. Quote the disclosures, identify every referenced currency, commodity, benchmark price, hedging method, sensitivity, and affected revenue stream, and state whether any number, qualifier, risk driver, or mitigation strategy changed. Explain what identical language would imply about the continuity of the Trust's market-risk exposure and management approach."
+    },
+    {
+      "q_id": "qa_2_000858",
+      "expanded_question": "Compare UNIFI INC's 2022/2023 and 2024 business-model descriptions. Identify geographic reporting segments, countries, facilities, customers, brands, product lines, manufacturing versus asset-light activities, outsourcing, licensing, joint ventures, and supply-chain roles. Report segment revenue, assets, capacity, customer concentration, facility, or geographic figures and explain how the segment structure and asset-light strategy changed in 2024."
+    },
+    {
+      "q_id": "qa_2_001093",
+      "expanded_question": "Compare CADIZ INC's 2021 and 2022 governmental-approval and permit risk factors. Identify every permit, agency, approval, litigation, delay, condition, appeal, political risk, and timing issue named in each year. Quote changes in the risk language, identify the specific new example or forward-looking statement added in 2022, and explain how it changes the stated uncertainty surrounding project development and operations."
+    },
+    {
+      "q_id": "qa_2_000292",
+      "expanded_question": "Compare EAGLE MATERIALS INC's 2023 and 2024 description of competition in gypsum wallboard. Report the number of major manufacturers, any stated market-share concentration percentage, capacity, geographic scope, barriers to entry, product differentiation, pricing, distribution, and customer factors. Calculate any change in concentration or manufacturer count and explain how the later description changes the assessment of competitive intensity."
+    },
+    {
+      "q_id": "qa_2_002495",
+      "expanded_question": "Compare LANCASTER COLONY CORP's 2022 and 2023 competitive-landscape disclosures. Identify competitor types, branded and private-label competition, product categories, pricing, innovation, quality, service, distribution, marketing, customer relationships, input costs, and market-share factors. Report any competitor count, segment, revenue, market, price, or investment figures and explain which competitive factors gained, lost, or changed in emphasis."
+    },
+    {
+      "q_id": "qa_2_000700",
+      "expanded_question": "Compare NORTH EUROPEAN OIL ROYALTY TRUST's 2020 and 2021 royalty-examination practices. State the exact purpose, scope, frequency, period covered, operator or counterparty examined, audit rights, cost treatment, findings, adjustments, and recovery process. Identify any change in examination interval, methodology, staffing, result, or wording and explain what continuity or change means for verification of royalty income."
+    },
+    {
+      "q_id": "qa_2_002187",
+      "expanded_question": "Using Journey Medical Corp's 2023 and 2024 Director Compensation Tables, list each non-employee director and the value of every 2022 and 2023 stock award. Sum the stock-award values across all eligible directors for each year, calculate the absolute dollar reduction from 2022 to 2023, and calculate the percentage decrease using 2022 as the denominator. Exclude employee-director compensation unless the table explicitly classifies it as non-employee director compensation."
+    },
+    {
+      "q_id": "qa_2_001002",
+      "expanded_question": "Compare AGILYSYS INC's 2019 and 2020 COVID-19 risk-factor language. Identify every reference to pandemic duration, uncertainty, travel, hospitality, customer demand, operations, revenue, liquidity, workforce, cost reduction, financing, recovery, and future effects. Quote the key wording changes, report any stated revenue, liquidity, cash, credit, or customer metrics, and explain how the later disclosure changes the company's assessment of the crisis's duration and severity."
+    },
+    {
+      "q_id": "qa_2_000669",
+      "expanded_question": "Compare NORTHWEST NATURAL GAS CO's NW Natural Water business in 2020 and 2021. Report customers, connections, service territories, acquired utilities, rate base, assets, capital investment, revenue, operating income, growth targets, regulatory approvals, and planned acquisitions or expansions. Calculate changes in scale and investment and explain whether the water segment became a larger diversification and growth platform relative to the natural-gas utility business."
+    },
+    {
+      "q_id": "qa_2_001893",
+      "expanded_question": "Compare RALPH LAUREN CORP's 2023 and 2024 descriptions of routine legal matters. List every category of litigation, claim, investigation, regulatory matter, employment dispute, intellectual-property dispute, consumer matter, contract claim, tax matter, or other proceeding stated in each year. Quote the materiality and outcome language, identify additions or removals, and explain whether the later disclosure signals a changed litigation profile or simply consistent boilerplate."
+    },
+    {
+      "q_id": "qa_2_001554",
+      "expanded_question": "Compare Sunnova Energy International Inc.'s 2021 and 2022 risks concerning solar-system performance and end-of-contract valuation. Identify performance guarantees, production assumptions, weather, maintenance, degradation, equipment, customer payments, lease or loan terms, renewal, repurchase, removal, residual value, tax, and accounting considerations. Report any warranty period, contract term, value assumption, loss figure, or performance metric and explain how the later disclosure changes the risk to asset value and customer economics."
+    },
+    {
+      "q_id": "qa_2_001105",
+      "expanded_question": "Compare CADIZ INC's 2023 and 2024 indebtedness-and-financing risk factor. Report total indebtedness, debt by instrument, interest rates, maturities, liquidity, cash, operating cash flow, capital needs, and project-specific funding requirements for each year. Identify all conditions required to meet cash-resource needs, including financing, asset sales, permits, contracts, project milestones, or Water Project progress; calculate debt changes; and explain the company's financial trajectory and project dependency."
+    },
+    {
+      "q_id": "qa_2_002281",
+      "expanded_question": "For the NEO compensation tables, list every 2020 NEO's total long-term incentive target value and compare each with Mark Lashier's 2021 target value of $6,050,000. Identify the closest 2020 value, calculate the absolute dollar difference, calculate the percentage difference using the 2020 amount as the denominator, and show the calculation formula and ranking of the closest candidates."
+    },
+    {
+      "q_id": "qa_2_000899",
+      "expanded_question": "Compare Valero Energy Corporation's workforce at the end of 2022 and the end of 2024. Report total employee headcount, employees by country or geographic region, employees by business segment if available, union or collectively bargained employees, number of bargaining agreements, and percentage of the workforce covered. Calculate absolute and percentage changes in headcount and collective-bargaining coverage and explain how workforce distribution changed."
+    },
+    {
+      "q_id": "qa_2_001328",
+      "expanded_question": "Compare Journey Medical Corp's 2023 and 2024 cybersecurity-risk discussion of the 2021 incident. Report the incident date, nature, affected systems or data, gross loss, insurance proceeds, recovered funds, unrecovered amount, legal or remediation costs, and accounting treatment. Calculate the recovery percentage and remaining exposure, identify exactly how the 2024 narrative updates the earlier account, and explain what the partial recovery indicates for risk management, liquidity, and financial condition."
+    },
+    {
+      "q_id": "qa_2_000229",
+      "expanded_question": "Compare EACO CORP's 2019 and 2022 market positioning, customer base, and competitive landscape. Identify target customers, end markets, product or service categories, geographic markets, competitors, distribution channels, revenue mix, customer concentration, pricing, and differentiation factors. Report all stated customer counts, market figures, revenue percentages, product counts, or geographic data and explain whether the company moved upmarket, broadened its customer base, or faced a changed competitive environment."
+    },
+    {
+      "q_id": "qa_2_000938",
+      "expanded_question": "For Veracyte in 2024, report the key financial-performance metrics, including total revenue, product revenue, gross margin, operating expenses, operating loss or income, net loss or income, cash, and any guidance figures. Compare the 2024 and 2023 reimbursement discussion by naming each test, payer, coverage or reimbursement rate, price, timing, and source of new detail. Calculate any disclosed year-over-year revenue, margin, reimbursement, or loss changes."
+    },
+    {
+      "q_id": "qa_2_000131",
+      "expanded_question": "Compare CADIZ INC's 2020 and 2021 product and technology portfolio. Identify water-supply capacity, groundwater or storage assets, agricultural activity, pipeline, well, treatment, solar, rail, power, and other supporting infrastructure. Report capacity in acre-feet or other stated units, land area, project count, capital investment, contract, customer, and construction milestones, and explain how the 2021 portfolio changed the scale or integration of the water and agricultural businesses."
+    },
+    {
+      "q_id": "qa_2_001292",
+      "expanded_question": "Compare INNOVATIVE FOOD HOLDINGS INC's 2021 and 2022 risk-factor lists. Identify every 2021 risk that is absent, materially shortened, or softened in 2022, with special attention to financial covenants, liquidity, debt, customer concentration, supplier risk, and operating performance. Quote the relevant language, state whether the year-end covenant issue remains, calculate any stated debt or covenant figures, and explain what removal or softening could indicate without assuming an outcome not stated in the disclosures."
+    },
+    {
+      "q_id": "qa_2_001643",
+      "expanded_question": "For Veracyte, report net loss and accumulated deficit for 2021 and 2022 using exact figures. Calculate the dollar change in annual net loss, the dollar increase in accumulated deficit, and the net loss as a percentage of revenue if revenue is stated. Identify the major drivers—revenue, gross margin, research and development, sales and marketing, acquisition, restructuring, impairment, investment, tax, or other items—and explain what the trend indicates about financial health and risk."
+    },
+    {
+      "q_id": "qa_2_001096",
+      "expanded_question": "Compare CADIZ INC's 2021 and 2022 risk factors. Identify every risk that was removed, consolidated, renamed, or materially de-emphasized, and quote the corresponding headings and language. Separately list each factor stated to cause stock-price volatility in both years, compare the lists word for word, and state whether the volatility factors are identical, expanded, reduced, or reordered."
+    },
+    {
+      "q_id": "qa_2_000271",
+      "expanded_question": "Compare the U.S. cement-consumption and gypsum-wallboard-shipment market data referenced in Eagle Materials' 2021 and 2022 text. Report each calendar year cited, cement consumption volume, wallboard shipment volume, growth or decline percentage, housing or construction indicator, and stated source. Calculate the change between the earlier and later referenced periods and explain what the market data imply for demand, pricing, capacity utilization, and competitive conditions."
+    },
+    {
+      "q_id": "qa_2_000864",
+      "expanded_question": "Compare UNIFI INC's 2022/2023 operational-efficiency initiatives with its fiscal 2024/2025 outlook. Identify cost-reduction programs, plant rationalization, automation, productivity, energy, labor, sourcing, inventory, capital-expenditure, capacity, and restructuring actions. Report all savings targets, spending amounts, timing milestones, facility counts, production metrics, and expected financial effects, and explain how capital investment supports or changes the efficiency strategy."
+    },
+    {
+      "q_id": "qa_2_002323",
+      "expanded_question": "For RALPH LAUREN CORP founder Ralph Lauren, report Class A Common Stock shares held in 2022, 2023, and 2024, plus the percentage of Class A voting power and combined voting power across Class A and Class B in each year. Calculate share-count changes, percentage-point changes in each voting measure, and any effect of Class B holdings, transfers, gifts, exercises, sales, repurchases, or dilution. Explain the relationship between the share changes and control of voting power."
+    },
+    {
+      "q_id": "qa_2_001288",
+      "expanded_question": "Compare INNOVATIVE FOOD HOLDINGS INC's 2021 and 2022 COVID-19 risk disclosures. Quote the pandemic-related language in each year, identify changes in operational, demand, supply-chain, workforce, customer, liquidity, and financial-risk descriptions, and list every new economic risk added in 2022, including inflation, interest rates, bank failures, recession, labor, transportation, or input costs. Explain how the company reframed pandemic risk within a broader macroeconomic context."
+    },
+    {
+      "q_id": "qa_2_000870",
+      "expanded_question": "Compare VALERO ENERGY CORP TX's renewable-fuels investments and decisions in 2020 and 2021. Identify renewable diesel, ethanol, sustainable aviation fuel, carbon-capture, low-carbon fuel, feedstock, refinery, joint-venture, and regulatory-credit initiatives. Report each investment amount, capacity, production volume, project location, ownership share, expected completion date, and stated return or strategic objective. Explain how investment scale and strategic focus changed year over year."
+    },
+    {
+      "q_id": "qa_2_002044",
+      "expanded_question": "Compare CADIZ INC's Board of Directors in 2021, 2022, and 2023. Report the total number of directors, independent directors, committee memberships, additions, departures, and any changes in board size each year. Identify the Chairperson in each year, state whether the chair was independent or executive where disclosed, give the date and nature of any chair transition, and explain the governance significance of the change."
+    },
+    {
+      "q_id": "qa_2_001620",
+      "expanded_question": "Compare VERACYTE INC's 2020 and 2021 revenue-dependency risk disclosure. Identify every product or test named, including the Decipher Prostate test; report revenue concentration, test volume, customer, payer, or product-share figures; and quote the language describing dependency on each product line. Explain how the addition of Decipher Prostate changes the relative emphasis on product concentration, diversification, and revenue risk."
+    },
+    {
+      "q_id": "qa_2_001879",
+      "expanded_question": "For Phillips 66 and DCP LP, identify each specific environmental penalty demand, potential remediation cost, fine, settlement, reserve, or contingent liability disclosed in the 2020 and 2022 passages. Report each amount, currency, claimant or regulator, facility or matter, and stated probability or materiality assessment. Calculate the total potential exposure by year, distinguish demanded amounts from estimated costs, and compare how management characterized materiality in 2020 versus 2022."
+    },
+    {
+      "q_id": "qa_2_000585",
+      "expanded_question": "For Lamb Weston Holdings Inc, report total net sales for fiscal 2021, fiscal 2022, and fiscal 2023. Calculate dollar and percentage growth for 2021-to-2022 and 2022-to-2023, including the exact 2022-to-2023 growth rate. Identify fiscal-2023 corporate actions such as acquisitions, divestitures, capacity expansions, price actions, segment changes, or customer developments, and explain which actions could plausibly contribute to the reported sales change."
+    },
+    {
+      "q_id": "qa_2_001084",
+      "expanded_question": "Compare Bitcoin Depot Inc's 2022 and 2024 risk disclosures. Identify every risk category newly introduced in 2024 that relates to third-party suppliers, retail-partner concentration, capital structure, the Tax Receivable Agreement, debt, public-company obligations, digital assets, data, or post-combination operations. Quote the new language, report counterparties, customer or partner concentration percentages, debt or Tax Receivable Agreement amounts if stated, and explain what the additions imply about the company's mature operating phase."
+    },
+    {
+      "q_id": "qa_2_001010",
+      "expanded_question": "Compare AGILYSYS INC's 2020 and 2021 risk disclosure on reliance on strategic partners and third-party providers. Identify every partner type, vendor, cloud host, software provider, reseller, hardware provider, small technology company, contract dependency, service-level risk, security issue, and continuity consequence mentioned in each year. Quote the expanded 2021 language, report any named provider, concentration, outage, cost, or performance figure, and explain how cloud hosting and smaller providers broaden the exposure."
+    },
+    {
+      "q_id": "qa_2_002299",
+      "expanded_question": "Compare RALPH LAUREN CORP's 2020 and 2021 executive LTI performance metrics. List every metric, including revenue, operating income, earnings, return, margin, cash flow, market, ESG, or strategic measure; report weighting, threshold, target, maximum, performance period, payout range, and actual result for each year. Identify additions, removals, reweighting, or recalibration and explain how those adjustments align with shifts in strategic priorities."
+    },
+    {
+      "q_id": "qa_2_002207",
+      "expanded_question": "Compare Journey Medical Corp CEO Claude Maraoui's total compensation in 2023 and 2024. Report salary, bonus, stock awards, option awards, non-equity incentive compensation, other compensation, and total compensation in both years. Calculate the dollar and percentage change for each component, identify which components increased or decreased most, and describe the reversal in compensation mix using exact amounts and shares of total pay."
+    },
+    {
+      "q_id": "qa_2_001076",
+      "expanded_question": "Compare BeOne Medicines Ltd's 2023 and 2024 data-privacy, cybersecurity, and China-regulatory risk disclosures. Identify every reference to the Data Security Law, PIPL, Cyber Security Law, cross-border data transfer, network security, government access, compliance, enforcement, investigation, penalty, data breach, third party, and business interruption. Quote new examples, updated statutory references, changed qualifiers, and any stated fines, dates, thresholds, or geographic scope, then explain how the risk characterization changed."
+    }
+  ]
+}
